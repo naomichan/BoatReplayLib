@@ -7,7 +7,9 @@ namespace BoatReplayLib.Packets {
     public MemoryStream Data;
 
     public void Dispose() {
-      Data.Dispose();
+      if(Data != null) {
+        Data.Dispose();
+      }
     }
   }
 }

@@ -11,6 +11,8 @@ namespace BoatReplayLib.Packets {
     public string PolymorphicReference = null;
     public ulong Size = 0;
     public string Encoding = "ascii";
+    public Type Fallback = null;
+    public ulong Padding = 0;
 
     public GamePacketFieldAttribute() {
     }

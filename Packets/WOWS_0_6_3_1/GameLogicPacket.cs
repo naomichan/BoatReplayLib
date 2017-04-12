@@ -8,11 +8,11 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1 {
     public uint AvatarId;
     public uint Subtype;
     public uint Length;
-    [GamePacketField(DynamicSizeReference = "Length", PolymorphicReference = "Subtype")]
+    [GamePacketField(DynamicSizeReference = "Length", PolymorphicReference = "Subtype", Fallback = typeof(MemoryPacket))]
     public IGamePacketTemplate Data;
 
     public void Dispose() {
-      if(typeof(IDisposable).IsAssignableFrom(Data.GetType())) {
+      if(Data != null && typeof(IDisposable).IsAssignableFrom(Data.GetType())) {
         ((IDisposable) Data).Dispose();
       }
     }
