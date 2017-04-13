@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using BoatReplayLib.Interfaces;
 
@@ -10,6 +11,10 @@ namespace BoatReplayLib.Packets {
       if(Data != null) {
         Data.Dispose();
       }
+    }
+
+    public Dictionary<string, object> SpecialValues() {
+      return null;
     }
   }
 }

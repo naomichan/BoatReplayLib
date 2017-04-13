@@ -1,4 +1,6 @@
-﻿using BoatReplayLib.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using BoatReplayLib.Interfaces;
 
 namespace BoatReplayLib.Packets.WOWS_0_6_3_1 {
   [GamePacket(Type = 0x16, Name = "GameVersion")]
@@ -6,5 +8,9 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1 {
     public uint Length;
     [GamePacketField(DynamicSizeReference = "Length")]
     public string Version;
+
+    public Dictionary<string, object> SpecialValues() {
+      return null;
+    }
   }
 }

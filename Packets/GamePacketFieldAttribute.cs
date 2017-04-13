@@ -11,8 +11,6 @@ namespace BoatReplayLib.Packets {
     public string PolymorphicReference = null;
     public ulong Size = 0;
     public string Encoding = "ascii";
-    public Type Fallback = null;
-    public ulong Padding = 0;
 
     public GamePacketFieldAttribute() {
     }
@@ -35,10 +33,12 @@ namespace BoatReplayLib.Packets {
         throw new FieldNotFoundException(DynamicSizeReference, T);
       }
 
-      return (ulong) field.GetValue(ob);
+      object value = field.GetValue(ob);
+
+      return (ulong)Convert.ChangeType(value, typeof(ulong));
     }
 
-    public Type Polymorph(IGamePacketTemplate ob) {
+    public Type Polymorph(IGamePacketTemplate ob, Type ns) {
       if(PolymorphicReference == null) {
         return null;
       }
@@ -49,7 +49,7 @@ namespace BoatReplayLib.Packets {
         throw new FieldNotFoundException(PolymorphicReference, T);
       }
 
-      return GamePacketTemplateFactory.INSTANCE.GetSubtype(T, (uint) field.GetValue(ob));
+      return GamePacketTemplateFactory.GetInstance().GetSubtype(T, (uint) field.GetValue(ob), ns);
     }
   }
 }

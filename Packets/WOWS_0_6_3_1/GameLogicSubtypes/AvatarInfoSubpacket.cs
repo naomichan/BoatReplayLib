@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using BoatReplayLib.Interfaces;
 
@@ -7,13 +8,11 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes {
   public class AvatarInfoSubpacket : IGamePacketTemplate {
     public uint Unknown1;
     public uint Unknown2;
-    public uint Unknown3;
+    public ushort Unknown3;
     public ushort Size;
     public ushort Unknown4;
     [GamePacketField(DynamicSizeReference = "Size")]
     public byte[] PickleData;
-    public uint Unknown5;
-    public ushort Unknown6;
 
     private static string[] KVTranslation = new string[] {
       "UserId",
@@ -29,10 +28,10 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes {
       null,
       null,
       "Name",
+      null,
       "DivisionId",
       null,
       "SquadId",
-      null,
       "Loadout",
       "WorldAvatarId",
       "ShipId",
@@ -43,11 +42,37 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes {
 
     private Dictionary<string, object>[] map = null;
     public Dictionary<string, object>[] ParsePickle() {
-      using(MemoryStream ms = new MemoryStream(PickleData)) {
-        dynamic data = Depickler.load(ms);
-        System.Diagnostics.Debugger.Break();
+      if(PickleData != null) {
+        List<object> pickle = (Unpickler.load(PickleData) as object[])[0] as List<object>;
+        Dictionary<string, object>[] ret = new Dictionary<string, object>[pickle.Count];
+        for(int i = 0; i < pickle.Count; ++i) {
+          List<object> entry = pickle[i] as List<object>;
+          ret[i] = new Dictionary<string, object>();
+          for(int j = 0; j < entry.Count; ++j) {
+            object[] pair = entry[j] as object[];
+            int index = (int) Convert.ChangeType(pair[0], typeof(int));
+            string key = $"Unknown{index}";
+            if(index < KVTranslation.Length && KVTranslation[index] != null) {
+              key = KVTranslation[index];
+            }
+            ret[i][key] = pair[1];
+          }
+        }
+        return ret;
       }
       return null;
     }
+
+    public Dictionary<string, object> SpecialValues() {
+      if(PickleData == null) {
+        return null;
+      }
+      if(map == null) {
+        ParsePickle();
+      }
+      Dictionary<string, object> d = new Dictionary<string, object>();
+      d["Info"] = map;
+      return d;
+     }
   }
 }

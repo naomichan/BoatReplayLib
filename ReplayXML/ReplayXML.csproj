@@ -4,15 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B8ACCD7A-7782-4BFF-A543-21A9C2EF500A}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{1EEDAB23-C075-42D2-B18F-02DE355AEEF2}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BoatReplayLib</RootNamespace>
-    <AssemblyName>BoatReplayLib</AssemblyName>
+    <RootNamespace>ReplayXML</RootNamespace>
+    <AssemblyName>ReplayXML</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -40,23 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FieldNotFoundException.cs" />
-    <Compile Include="Interfaces\IGamePacketNamespace.cs" />
-    <Compile Include="Interfaces\IGamePacketTemplate.cs" />
-    <Compile Include="Packets\BigWorldPacket.cs" />
-    <Compile Include="Packets\GamePacketFieldAttribute.cs" />
-    <Compile Include="Packets\GamePacketAttribute.cs" />
-    <Compile Include="Packets\GamePacketTemplateFactory.cs" />
-    <Compile Include="Packets\MemoryPacket.cs" />
-    <Compile Include="Packets\WOWS_0_6_3_1\GameLogicPacket.cs" />
-    <Compile Include="Packets\WOWS_0_6_3_1\GameLogicSubtypes\AvatarInfoSubpacket.cs" />
-    <Compile Include="Packets\WOWS_0_6_3_1\GameVersionPacket.cs" />
-    <Compile Include="Packets\WOWS_0_6_3_1\WarshipsNamespace.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Unpickler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BoatReplayLib.csproj">
+      <Project>{b8accd7a-7782-4bff-a543-21a9c2ef500a}</Project>
+      <Name>BoatReplayLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
