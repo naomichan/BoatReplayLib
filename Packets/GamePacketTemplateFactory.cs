@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using BoatReplayLib.Interfaces;
+using BoatReplayLib.Packets.Generic;
 
 namespace BoatReplayLib.Packets {
   public class GamePacketTemplateFactory : IDisposable {

@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using BoatReplayLib.Interfaces;
 
-namespace BoatReplayLib.Packets {
+namespace BoatReplayLib.Packets.Generic {
   public class MemoryPacket : IGamePacketTemplate, IDisposable {
     public MemoryStream Data;
 

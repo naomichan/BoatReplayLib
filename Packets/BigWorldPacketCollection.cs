@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BoatReplayLib.Packets.Generic;
 
 namespace BoatReplayLib.Packets {
   public class BigWorldPacketCollection {

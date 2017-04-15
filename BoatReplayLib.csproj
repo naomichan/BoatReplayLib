@@ -44,14 +44,14 @@
     <Compile Include="Interfaces\IGamePacketNamespace.cs" />
     <Compile Include="Interfaces\IGamePacketPostTemplate.cs" />
     <Compile Include="Interfaces\IGamePacketTemplate.cs" />
-    <Compile Include="Packets\BigWorldPacket.cs" />
+    <Compile Include="Packets\Generic\BigWorldPacket.cs" />
     <Compile Include="Packets\BigWorldPacketCollection.cs" />
     <Compile Include="Packets\GamePacketFieldAttribute.cs" />
     <Compile Include="Packets\GamePacketAttribute.cs" />
     <Compile Include="Packets\GamePacketTemplateFactory.cs" />
     <Compile Include="Packets\Generic\Float3.cs" />
     <Compile Include="Packets\Generic\Float4.cs" />
-    <Compile Include="Packets\MemoryPacket.cs" />
+    <Compile Include="Packets\Generic\MemoryPacket.cs" />
     <Compile Include="Packets\WOWS_0_6_3_1\GameLogicPacket.cs" />
     <Compile Include="Packets\WOWS_0_6_3_1\GameLogicSubtypes\AvatarInfoSubpacket.cs" />
     <Compile Include="Packets\WOWS_0_6_3_1\Packet01.cs" />

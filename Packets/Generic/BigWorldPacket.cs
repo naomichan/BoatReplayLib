@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using BoatReplayLib.Interfaces;
 
-namespace BoatReplayLib.Packets {
+namespace BoatReplayLib.Packets.Generic {
   public class BigWorldPacket : IGamePacketTemplate, IDisposable {
     public uint Size;
     public uint Type;
