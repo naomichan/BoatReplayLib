@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using BoatReplayLib.Packets;
-using BoatReplayLib.Packets.WOWS_0_6_3_1;
 
 namespace ReplayXML {
   class Program {
@@ -16,7 +15,7 @@ namespace ReplayXML {
         return;
       }
       using(Stream file = new FileStream(args[0], FileMode.Open, FileAccess.Read, FileShare.Read)) {
-        BigWorldPacketCollection packets = factory.ReadAll(file, typeof(WarshipsNamespace));
+        BigWorldPacketCollection packets = factory.ReadAll(file, factory.GetNamespace("0,6,3,1"));
         System.Diagnostics.Debugger.Break();
       }
     }

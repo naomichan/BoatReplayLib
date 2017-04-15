@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using BoatReplayLib.Interfaces;
 
 namespace BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes {

@@ -12,9 +12,5 @@ namespace BoatReplayLib.Packets {
         Data.Dispose();
       }
     }
-
-    public Dictionary<string, object> SpecialValues() {
-      return null;
-    }
   }
 }

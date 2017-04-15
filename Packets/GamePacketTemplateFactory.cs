@@ -134,7 +134,7 @@ namespace BoatReplayLib.Packets {
             return Read(sandbox, ns, template);
           }
         default:
-          if(GAMEPACKETTEMPLATE.IsAssignableFrom(fieldType)) {
+          if(GAMEPACKETTEMPLATE.IsAssignableFrom(fieldType) && fieldType.IsInterface) {
             MemoryStream sandbox = new MemoryStream(reader.ReadBytes((int)size));
             Type template = null;
             if(attrib != null) {
@@ -144,6 +144,8 @@ namespace BoatReplayLib.Packets {
               template = MEMORYTEMPLATE;
             }
             return Read(sandbox, ns, template);
+          } else if(GAMEPACKETTEMPLATE.IsAssignableFrom(fieldType) && !fieldType.IsInterface) {
+            return Read(reader.BaseStream, ns, fieldType);
           }
           Console.Error.WriteLine($"Warning: No read method defined for {fieldType.Name}");
           break;
@@ -222,8 +224,9 @@ namespace BoatReplayLib.Packets {
     }
 
     public Type GetNamespace(string version) {
-      foreach(KeyValuePair<string, Type> pair in namespaceCache) {
-        if(pair.Key.StartsWith(version)) {
+      string fixedVersion = string.Join(".", version.Split(new char[3] { ' ', ',', '.' }, StringSplitOptions.RemoveEmptyEntries));
+      foreach(KeyValuePair<string, Type> pair in namespaceCache) { 
+        if(pair.Key.StartsWith(fixedVersion) || fixedVersion.StartsWith(pair.Key)) {
           return pair.Value;
         }
       }

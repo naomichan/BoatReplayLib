@@ -8,9 +8,5 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1 {
     public uint Length;
     [GamePacketField(DynamicSizeReference = "Length")]
     public string Version;
-
-    public Dictionary<string, object> SpecialValues() {
-      return null;
-    }
   }
 }

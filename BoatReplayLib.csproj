@@ -49,9 +49,15 @@
     <Compile Include="Packets\GamePacketFieldAttribute.cs" />
     <Compile Include="Packets\GamePacketAttribute.cs" />
     <Compile Include="Packets\GamePacketTemplateFactory.cs" />
+    <Compile Include="Packets\Generic\Float3.cs" />
+    <Compile Include="Packets\Generic\Float4.cs" />
     <Compile Include="Packets\MemoryPacket.cs" />
     <Compile Include="Packets\WOWS_0_6_3_1\GameLogicPacket.cs" />
     <Compile Include="Packets\WOWS_0_6_3_1\GameLogicSubtypes\AvatarInfoSubpacket.cs" />
+    <Compile Include="Packets\WOWS_0_6_3_1\Packet01.cs" />
+    <Compile Include="Packets\WOWS_0_6_3_1\Packet00.cs" />
+    <Compile Include="Packets\WOWS_0_6_3_1\Packet05.cs" />
+    <Compile Include="Packets\WOWS_0_6_3_1\Packet03.cs" />
     <Compile Include="Packets\WOWS_0_6_3_1\StartPacket.cs" />
     <Compile Include="Packets\WOWS_0_6_3_1\DisconnectPacket.cs" />
     <Compile Include="Packets\WOWS_0_6_3_1\GameVersionPacket.cs" />

@@ -49,7 +49,7 @@ namespace BoatReplayLib.Packets {
         throw new FieldNotFoundException(PolymorphicReference, T);
       }
 
-      return GamePacketTemplateFactory.GetInstance().GetSubtype(T, (uint) field.GetValue(ob), ns);
+      return GamePacketTemplateFactory.GetInstance().GetSubtype(T, (uint) Convert.ChangeType(field.GetValue(ob), typeof(uint)), ns);
     }
   }
 }
