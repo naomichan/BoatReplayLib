@@ -6,14 +6,5 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1 {
     public string GameVersion() {
       return "0, 6, 3";
     }
-
-    private static Type[] templates = new Type[] {
-      typeof(GameVersionPacket),
-      typeof(GameLogicPacket)
-    };
-
-    public Type[] GetPacketTemplates() {
-      return templates;
-    }
   }
 }

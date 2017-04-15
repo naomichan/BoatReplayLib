@@ -5,7 +5,7 @@ using BoatReplayLib.Interfaces;
 
 namespace BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes {
   [GamePacket(Name = "AvatarInfo", Type = 0x55)]
-  public class AvatarInfoSubpacket : IGamePacketTemplate {
+  public class AvatarInfoSubpacket : IGamePacketPostTemplate {
     public uint Unknown1;
     public uint Unknown2;
     public ushort Unknown3;
@@ -41,7 +41,10 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes {
     };
 
     private Dictionary<string, object>[] map = null;
-    public Dictionary<string, object>[] ParsePickle() {
+    public IReadOnlyDictionary<string, object>[] ParsePickle() {
+      if(map != null) {
+        return map;
+      }
       if(PickleData != null) {
         List<object> pickle = (Unpickler.load(PickleData) as object[])[0] as List<object>;
         Dictionary<string, object>[] ret = new Dictionary<string, object>[pickle.Count];
@@ -58,6 +61,7 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes {
             ret[i][key] = pair[1];
           }
         }
+        map = ret;
         return ret;
       }
       return null;
@@ -74,5 +78,9 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes {
       d["Info"] = map;
       return d;
      }
+
+    public void PostProcessing() {
+      ParsePickle();
+    }
   }
 }

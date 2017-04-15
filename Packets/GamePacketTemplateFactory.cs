@@ -12,9 +12,12 @@ namespace BoatReplayLib.Packets {
     private static Type MEMORYTEMPLATE = typeof(MemoryPacket);
     private static Type BIGWORLDPACKET = typeof(BigWorldPacket);
     private static Type GAMEPACKETTEMPLATE = typeof(IGamePacketTemplate);
+    private static Type GAMEPACKETPPTEMPLATE = typeof(IGamePacketPostTemplate);
     private static Type GAMEPACKETNS = typeof(IGamePacketNamespace);
     private static Type GAMEPACKETATTRIB = typeof(GamePacketAttribute);
     private static Type GAMEPACKETFIELDATTRIB = typeof(GamePacketFieldAttribute);
+
+    private static Dictionary<string, Type[]> reflectTemplateCache = new Dictionary<string, Type[]>();
 
     public GamePacketTemplateFactory() {
       Type T = GAMEPACKETNS;
@@ -24,11 +27,27 @@ namespace BoatReplayLib.Packets {
       }
     }
 
-    public List<BigWorldPacket> ReadAll(Stream data, Type ns) {
-      List<BigWorldPacket> packets = new List<BigWorldPacket>();
+    public static Type[] GetTemplates(string ns) {
+      if(reflectTemplateCache.ContainsKey(ns)) {
+        return reflectTemplateCache[ns];
+      }
+
+      List<Type> templates = new List<Type>();
+      foreach(Type T in AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(p => GAMEPACKETTEMPLATE.IsAssignableFrom(p) && p.Namespace == ns && !p.IsInterface)) {
+        templates.Add(T);
+      }
+
+      reflectTemplateCache[ns] = templates.ToArray();
+
+      return reflectTemplateCache[ns];
+    }
+
+    public BigWorldPacketCollection ReadAll(Stream data, Type ns) {
+      BigWorldPacketCollection packets = new BigWorldPacketCollection();
       while(data.Position < data.Length) {
         packets.Add(Read(data, ns) as BigWorldPacket);
       }
+      packets.Freeze();
       return packets;
     }
     
@@ -57,6 +76,9 @@ namespace BoatReplayLib.Packets {
           }
           field.SetValue(instance, value);
         }
+      }
+      if(GAMEPACKETPPTEMPLATE.IsAssignableFrom(template)) {
+        (instance as IGamePacketPostTemplate).PostProcessing();
       }
       return instance;
     }
@@ -217,7 +239,7 @@ namespace BoatReplayLib.Packets {
       namespaceCache[ns.GameVersion()] = Tns;
       templateCache[Tns.FullName] = new Dictionary<uint, Type>();
 
-      foreach(Type T in ns.GetPacketTemplates()) {
+      foreach(Type T in GetTemplates(Tns.Namespace)) {
         GamePacketAttribute attrib = GetGamePacketAttribute(T);
         if(attrib == null) {
           continue;
@@ -244,8 +266,9 @@ namespace BoatReplayLib.Packets {
 
     public Type GetSubtype(Type t, uint v, Type ns) {
       GamePacketAttribute attrib = GetGamePacketAttribute(t);
-      if(attrib != null && attrib.SubTypes != null) {
-        foreach(Type Ts in attrib.SubTypes) {
+      if(attrib != null && attrib.SubTypes == true) {
+        Type[] subtypes = GetTemplates($"{t.Namespace}.{attrib.Name}Subtypes");
+        foreach(Type Ts in subtypes) {
           GamePacketAttribute subattrib = GetGamePacketAttribute(Ts);
           if(subattrib.Type == v) {
             return Ts;
