@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BoatReplayLib {
   class Unpickler {
-    public static object load(byte[] data) {
+    public static object[] load(byte[] data) {
       using(MemoryStream ms = new MemoryStream(data)) {
         return load(ms);
       }

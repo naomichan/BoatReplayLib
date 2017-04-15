@@ -45,7 +45,7 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes {
         return map;
       }
       if(PickleData != null) {
-        List<object> pickle = (Unpickler.load(PickleData) as object[])[0] as List<object>;
+        List<object> pickle = Unpickler.load(PickleData)[0] as List<object>;
         Dictionary<string, object>[] ret = new Dictionary<string, object>[pickle.Count];
         for(int i = 0; i < pickle.Count; ++i) {
           List<object> entry = pickle[i] as List<object>;
