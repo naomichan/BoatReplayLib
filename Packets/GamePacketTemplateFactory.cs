@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using BoatReplayLib.Interfaces;
 using BoatReplayLib.Packets.Generic;
@@ -22,7 +23,7 @@ namespace BoatReplayLib.Packets {
 
     public GamePacketTemplateFactory() {
       Type T = GAMEPACKETNS;
-      
+
       foreach(Type Tns in AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(p => T.IsAssignableFrom(p) && !p.IsInterface)) {
         LoadTemplates(Tns);
       }
@@ -47,7 +48,7 @@ namespace BoatReplayLib.Packets {
       return ReadAll(data, ns, BigWorldPacketCollection.CollectionMode.Packets);
     }
 
-      
+
     public BigWorldPacketCollection ReadAll(Stream data, Type ns, BigWorldPacketCollection.CollectionMode mode) {
       BigWorldPacketCollection packets = new BigWorldPacketCollection(mode);
       while(data.Position < data.Length) {
@@ -56,9 +57,26 @@ namespace BoatReplayLib.Packets {
       packets.Freeze();
       return packets;
     }
-    
+
     public IGamePacketTemplate Read(Stream data, Type ns) {
       return Read(data, ns, BIGWORLDPACKET);
+    }
+
+    [System.Diagnostics.DebuggerStepThrough]
+    public void ReadValue(BinaryReader reader, Type template, Type ns, bool isArray, GamePacketFieldAttribute attrib, FieldInfo field, IGamePacketTemplate instance) {
+      try {
+        if(isArray) {
+          field.SetValue(instance, ReadGenericArray(reader, attrib, instance, field, field.FieldType, ns));
+        } else {
+          field.SetValue(instance, ReadGeneric(reader, attrib, instance, field, field.FieldType, ns));
+        }
+      } catch(Exception ex) {
+        Console.Error.WriteLine("{0} does not match packet data!", template.FullName);
+        Console.Error.WriteLine(ex.ToString());
+        if(System.Diagnostics.Debugger.IsAttached) {
+          throw;
+        }
+      }
     }
 
     public IGamePacketTemplate Read(Stream data, Type ns, Type template) {
@@ -74,10 +92,10 @@ namespace BoatReplayLib.Packets {
           }
           GamePacketFieldAttribute attrib = GetGamePacketFieldAttribute(field);
           bool isArray = field.FieldType.IsArray;
-          if(isArray) {
-            field.SetValue(instance, ReadGenericArray(reader, attrib, instance, field, field.FieldType, ns));
-          } else {
-            field.SetValue(instance, ReadGeneric(reader, attrib, instance, field, field.FieldType, ns));
+          try {
+            ReadValue(reader, template, ns, isArray, attrib, field, instance);
+          } catch {
+            return null;
           }
         }
       }
@@ -161,10 +179,11 @@ namespace BoatReplayLib.Packets {
       if(attrib != null && attrib.Ignore == true) {
         return null;
       }
+      Type baseType = fieldType.GetElementType();
       ulong size = 0;
       Encoding encoding = Encoding.Default;
       if(attrib == null) {
-        if(fieldType.GetElementType().Name == "Byte") {
+        if(baseType.Name == "Byte") {
           size = (ulong)(reader.BaseStream.Length - reader.BaseStream.Position);
         } else {
           throw new Exception($"Array values must have GamePacketFieldAttribute at {field.DeclaringType.FullName}.{field.Name}");
@@ -173,42 +192,56 @@ namespace BoatReplayLib.Packets {
         size = attrib.RefSize(instance);
         encoding = attrib.GetEncoding();
       }
-      Array ret = Array.CreateInstance(fieldType.GetElementType(), (int) size);
-
-      switch(fieldType.GetElementType().Name) {
+      Array ret = Array.CreateInstance(fieldType.GetElementType(), (int)size);
+      switch(baseType.Name) {
         case "Single":
-          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadSingle(), (int) i);
+          for(ulong i = 0; i < size; ++i)
+            ret.SetValue(reader.ReadSingle(), (int)i);
           break;
         case "Boolean":
-          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadByte() != 0, (int) i);
+          for(ulong i = 0; i < size; ++i)
+            ret.SetValue(reader.ReadByte() != 0, (int)i);
           break;
         case "Int16":
-          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadInt16(), (int) i);
+          for(ulong i = 0; i < size; ++i)
+            ret.SetValue(reader.ReadInt16(), (int)i);
           break;
         case "UInt16":
-          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadUInt16(), (int) i);
+          for(ulong i = 0; i < size; ++i)
+            ret.SetValue(reader.ReadUInt16(), (int)i);
           break;
         case "Int32":
-          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadInt32(), (int) i);
+          for(ulong i = 0; i < size; ++i)
+            ret.SetValue(reader.ReadInt32(), (int)i);
           break;
         case "UInt32":
-          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadUInt32(), (int) i);
+          for(ulong i = 0; i < size; ++i)
+            ret.SetValue(reader.ReadUInt32(), (int)i);
           break;
         case "Int64":
-          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadInt64(), (int) i);
+          for(ulong i = 0; i < size; ++i)
+            ret.SetValue(reader.ReadInt64(), (int)i);
           break;
         case "UInt64":
-          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadUInt64(), (int) i);
+          for(ulong i = 0; i < size; ++i)
+            ret.SetValue(reader.ReadUInt64(), (int)i);
           break;
         case "Byte":
-          ret = reader.ReadBytes((int) size);
+          ret = reader.ReadBytes((int)size);
           break;
         case "SByte":
-          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadSByte(), (int) i);
+          for(ulong i = 0; i < size; ++i)
+            ret.SetValue(reader.ReadSByte(), (int)i);
           break;
         default:
-          Console.Error.WriteLine($"Warning: No read method defined for {fieldType.Name}");
-          return null;
+          if(GAMEPACKETTEMPLATE.IsAssignableFrom(baseType) && !baseType.IsInterface) {
+            for(ulong i = 0; i < size; ++i)
+              ret.SetValue(Read(reader.BaseStream, ns, baseType), (int)i);
+          } else {
+            Console.Error.WriteLine($"Warning: No read method defined for {fieldType.Name}");
+            return null;
+          }
+          break;
       }
       return ret;
     }
@@ -234,7 +267,7 @@ namespace BoatReplayLib.Packets {
 
     public Type GetNamespace(string version) {
       string fixedVersion = string.Join(".", version.Split(new char[3] { ' ', ',', '.' }, StringSplitOptions.RemoveEmptyEntries));
-      foreach(KeyValuePair<string, Type> pair in namespaceCache) { 
+      foreach(KeyValuePair<string, Type> pair in namespaceCache) {
         if(pair.Key.StartsWith(fixedVersion) || fixedVersion.StartsWith(pair.Key)) {
           return pair.Value;
         }
@@ -284,7 +317,7 @@ namespace BoatReplayLib.Packets {
         Type[] subtypes = GetTemplates($"{t.Namespace}.{attrib.Name}Subtypes");
         foreach(Type Ts in subtypes) {
           GamePacketAttribute subattrib = GetGamePacketAttribute(Ts);
-          if(subattrib.Type == v) {
+          if(subattrib != null && subattrib.Type == v) {
             return Ts;
           }
         }

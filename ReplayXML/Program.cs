@@ -15,7 +15,7 @@ namespace ReplayXML {
         return;
       }
       using(Stream file = new FileStream(args[0], FileMode.Open, FileAccess.Read, FileShare.Read)) {
-        BigWorldPacketCollection packets = factory.ReadAll(file, factory.GetNamespace("0,6,3,1"));
+        BigWorldPacketCollection packets = factory.ReadAll(file, factory.GetNamespace("0,6,3,1"), BigWorldPacketCollection.CollectionMode.SubType);
         System.Diagnostics.Debugger.Break();
       }
     }

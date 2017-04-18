@@ -49,6 +49,7 @@
     <Compile Include="Packets\GamePacketFieldAttribute.cs" />
     <Compile Include="Packets\GamePacketAttribute.cs" />
     <Compile Include="Packets\GamePacketTemplateFactory.cs" />
+    <Compile Include="Packets\Generic\Float2.cs" />
     <Compile Include="Packets\Generic\Float3.cs" />
     <Compile Include="Packets\Generic\Matrix4.cs" />
     <Compile Include="Packets\Generic\Float4.cs" />
@@ -66,6 +67,10 @@
     <Compile Include="Packets\WOWS_0_6_3_1\Packet0F.cs" />
     <Compile Include="Packets\WOWS_0_6_3_1\Packet0E.cs" />
     <Compile Include="Packets\WOWS_0_6_3_1\PositionPacket.cs" />
+    <Compile Include="Packets\WOWS_0_6_3_1\UnknownPacket05Subtypes\Weather.cs" />
+    <Compile Include="Packets\WOWS_0_6_3_1\UnknownPacket05Subtypes\WeatherParameter.cs" />
+    <Compile Include="Packets\WOWS_0_6_3_1\UnknownPacket05Subtypes\UnknownSubtype04.cs" />
+    <Compile Include="Packets\WOWS_0_6_3_1\UnknownPacket05Subtypes\WeatherSubtype.cs" />
     <Compile Include="Packets\WOWS_0_6_3_1\WorldLogicPacket.cs" />
     <Compile Include="Packets\WOWS_0_6_3_1\GameLogicPacket.cs" />
     <Compile Include="Packets\WOWS_0_6_3_1\GameLogicSubtypes\AvatarInfoSubpacket.cs" />
