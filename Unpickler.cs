@@ -40,9 +40,12 @@ namespace BoatReplayLib {
     private const byte OPCODE_EMPTY_LIST = 0x5D;
     private const byte OPCODE_APPENDS = 0x65;
     private const byte OPCODE_BINGET = 0x68;
+    private const byte OPCODE_LONGBINGET = 0x6A;
     private const byte OPCODE_BINPUT = 0x71;
+    private const byte OPCODE_LONGBINPUT = 0x72;
     private const byte OPCODE_SETITEMS = 0x75;
     private const byte OPCODE_EMPTY_DICT = 0x7D;
+    private const byte OPCODE_PROTO = 0x80;
     private const byte OPCODE_TUPLE2 = 0x86;
     private const byte OPCODE_NEWTRUE = 0x88;
     private const byte OPCODE_NEWFALSE = 0x89;
@@ -52,14 +55,17 @@ namespace BoatReplayLib {
     private const string FALSE = "00";
 
     public static object[] load(Stream data) {
-      data.Position += 1; // first byte is protocol
       using(BinaryReader reader = new BinaryReader(data)) {
         Stack<object> stack = new Stack<object>();
         Dictionary<int, object> memo = new Dictionary<int, object>();
         Stack<Stack<object>> metastack = new Stack<Stack<object>>();
+        byte protocol = 2;
         while(data.Position < data.Length) {
           byte op = reader.ReadByte();
           switch(op) {
+            case OPCODE_PROTO:
+              protocol = reader.ReadByte();
+              break;
             case OPCODE_EMPTY_LIST:
               stack.Push(new List<object>());
             break;
@@ -82,8 +88,18 @@ namespace BoatReplayLib {
                 memo[i] = stack.Peek();
               }
               break;
+            case OPCODE_LONGBINPUT: {
+                int i = reader.ReadInt32();
+                memo[i] = stack.Peek();
+              }
+              break;
             case OPCODE_BINGET: {
                 byte i = reader.ReadByte();
+                stack.Push(memo[i]);
+              }
+              break;
+            case OPCODE_LONGBINGET: {
+                int i = reader.ReadInt32();
                 stack.Push(memo[i]);
               }
               break;

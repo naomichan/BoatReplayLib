@@ -9,34 +9,34 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes {
     public uint Unknown2;
     public ushort Unknown3;
     public ushort Size;
-    public ushort Unknown4;
+    public byte Unknown4;
     [GamePacketField(DynamicSizeReference = "Size")]
     public byte[] PickleData;
 
     private static string[] KVTranslation = new string[] {
-      "UserId",
-      "NetworkAvatarId",
-      "ClanTag",
-      null,
-      "Id",
-      "IsAlly",
-      null,
-      "IsEnemy",
-      null,
-      null,
-      null,
-      null,
-      "Name",
-      null,
-      "DivisionId",
-      null,
-      "SquadId",
-      "Loadout",
-      "WorldAvatarId",
-      "ShipId",
-      null,
-      null,
-      null
+      "UserId", // 0
+      "NetworkAvatarId", // 1
+      "ClanTag", // 2
+      null, // 3
+      "Id", // 4
+      "IsAlly", // 5
+      null, // 6
+      "IsEnemy", // 7
+      null, // 8
+      null, // 9
+      null, // 10
+      "Health", // 11
+      "Name", // 12
+      null, // 13
+      "DivisionId", // 14
+      null, // 15
+      "SquadId", // 16
+      "Loadout", // 17
+      "WorldAvatarId", // 18
+      "ShipId", // 19
+      null, // 20
+      null, // 21
+      null // 22
     };
 
     private Dictionary<string, object>[] map = null;

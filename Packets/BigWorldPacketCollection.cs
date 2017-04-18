@@ -16,7 +16,7 @@ namespace BoatReplayLib.Packets {
     public List<BigWorldPacket> Packets => packets;
     public Dictionary<uint, List<BigWorldPacket>> ByType => packetsByType;
     public Dictionary<float, List<BigWorldPacket>> ByTime => packetsByTime;
-    private Dictionary<uint, Dictionary<uint, List<BigWorldPacket>>> BySubtype => packetsBySubtype;
+    public Dictionary<uint, Dictionary<uint, List<BigWorldPacket>>> BySubtype => packetsBySubtype;
     public SortedSet<float> TimeIndex => timeIndex;
     
     private bool frozen = false;
