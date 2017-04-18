@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using BoatReplayLib.Interfaces;
+﻿using BoatReplayLib.Interfaces;
 
 namespace BoatReplayLib.Packets.WOWS_0_6_3_1 {
   [GamePacket(Type = 0x00, Name = "UnknownPacket00")]

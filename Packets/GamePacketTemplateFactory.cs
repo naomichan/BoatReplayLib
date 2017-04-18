@@ -67,15 +67,13 @@ namespace BoatReplayLib.Packets {
           if(!field.IsPublic) {
             continue;
           }
-          object value = null;
           GamePacketFieldAttribute attrib = GetGamePacketFieldAttribute(field);
           bool isArray = field.FieldType.IsArray;
           if(isArray) {
-            value = ReadGenericArray(reader, attrib, instance, field, field.FieldType, ns);
+            field.SetValue(instance, ReadGenericArray(reader, attrib, instance, field, field.FieldType, ns));
           } else {
-            value = ReadGeneric(reader, attrib, instance, field, field.FieldType, ns);
+            field.SetValue(instance, ReadGeneric(reader, attrib, instance, field, field.FieldType, ns));
           }
-          field.SetValue(instance, value);
         }
       }
       if(GAMEPACKETPPTEMPLATE.IsAssignableFrom(template)) {
@@ -154,7 +152,7 @@ namespace BoatReplayLib.Packets {
       return null;
     }
 
-    private object ReadGenericArray(BinaryReader reader, GamePacketFieldAttribute attrib, IGamePacketTemplate instance, FieldInfo field, Type fieldType, Type ns) {
+    private Array ReadGenericArray(BinaryReader reader, GamePacketFieldAttribute attrib, IGamePacketTemplate instance, FieldInfo field, Type fieldType, Type ns) {
       if(attrib != null && attrib.Ignore == true) {
         return null;
       }
@@ -170,37 +168,38 @@ namespace BoatReplayLib.Packets {
         size = attrib.RefSize(instance);
         encoding = attrib.GetEncoding();
       }
-      object[] ret = new object[size];
+      Array ret = Array.CreateInstance(fieldType.GetElementType(), (int) size);
 
       switch(fieldType.GetElementType().Name) {
         case "Single":
-          for(ulong i = 0; i < size; ++i) ret[i] = reader.ReadSingle();
+          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadSingle(), (int) i);
           break;
         case "Boolean":
-          for(ulong i = 0; i < size; ++i) ret[i] = reader.ReadByte() != 0;
+          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadByte() != 0, (int) i);
           break;
         case "Int16":
-          for(ulong i = 0; i < size; ++i) ret[i] = reader.ReadInt16();
+          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadInt16(), (int) i);
           break;
         case "UInt16":
-          for(ulong i = 0; i < size; ++i) ret[i] = reader.ReadUInt16();
+          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadUInt16(), (int) i);
           break;
         case "Int32":
-          for(ulong i = 0; i < size; ++i) ret[i] = reader.ReadInt32();
+          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadInt32(), (int) i);
           break;
         case "UInt32":
-          for(ulong i = 0; i < size; ++i) ret[i] = reader.ReadUInt32();
+          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadUInt32(), (int) i);
           break;
         case "Int64":
-          for(ulong i = 0; i < size; ++i) ret[i] = reader.ReadInt64();
+          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadInt64(), (int) i);
           break;
         case "UInt64":
-          for(ulong i = 0; i < size; ++i) ret[i] = reader.ReadUInt64();
+          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadUInt64(), (int) i);
           break;
         case "Byte":
-          return reader.ReadBytes((int)size);
+          ret = reader.ReadBytes((int) size);
+          break;
         case "SByte":
-          for(ulong i = 0; i < size; ++i) ret[i] = reader.ReadSByte();
+          for(ulong i = 0; i < size; ++i) ret.SetValue(reader.ReadSByte(), (int) i);
           break;
         default:
           Console.Error.WriteLine($"Warning: No read method defined for {fieldType.Name}");
@@ -219,6 +218,10 @@ namespace BoatReplayLib.Packets {
 
       if(templateCache[ns.FullName].ContainsKey(type)) {
         return templateCache[ns.FullName][type];
+      }
+
+      if(MissingAnnoy.Add(ns.FullName + type.ToString())) {
+        Console.Error.WriteLine("Missing Type {0:X} for {1}", type, ns.FullName);
       }
 
       return null;
@@ -268,6 +271,8 @@ namespace BoatReplayLib.Packets {
       return attribs[0] as GamePacketFieldAttribute;
     }
 
+    public HashSet<string> MissingAnnoy = new HashSet<string>();
+
     public Type GetSubtype(Type t, uint v, Type ns) {
       GamePacketAttribute attrib = GetGamePacketAttribute(t);
       if(attrib != null && attrib.SubTypes == true) {
@@ -280,6 +285,10 @@ namespace BoatReplayLib.Packets {
         }
       } else {
         return GetTemplate(ns, v);
+      }
+
+      if(MissingAnnoy.Add(t.FullName + ns.FullName + v.ToString())) {
+        Console.Error.WriteLine("Missing Subtype {0:X} for {1} ({2})", v, t.Name, ns.FullName);
       }
       return null;
     }
