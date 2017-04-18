@@ -44,7 +44,12 @@ namespace BoatReplayLib.Packets {
     }
 
     public BigWorldPacketCollection ReadAll(Stream data, Type ns) {
-      BigWorldPacketCollection packets = new BigWorldPacketCollection();
+      return ReadAll(data, ns, BigWorldPacketCollection.CollectionMode.Packets);
+    }
+
+      
+    public BigWorldPacketCollection ReadAll(Stream data, Type ns, BigWorldPacketCollection.CollectionMode mode) {
+      BigWorldPacketCollection packets = new BigWorldPacketCollection(mode);
       while(data.Position < data.Length) {
         packets.Add(Read(data, ns) as BigWorldPacket);
       }

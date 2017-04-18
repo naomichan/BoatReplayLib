@@ -14,5 +14,26 @@ namespace BoatReplayLib.Packets.Generic {
         ((IDisposable) Data).Dispose();
       }
     }
+
+    public bool HasSubtypes() {
+      object[] attribs = Data.GetType().GetCustomAttributes(typeof(GamePacketAttribute), false);
+      if(attribs.Length == 0) {
+        return false;
+      }
+      GamePacketAttribute attrib = attribs[0] as GamePacketAttribute;
+      return attrib.SubTypes;
+    }
+
+    public uint GetSubtype() {
+      object[] attribs = Data.GetType().GetCustomAttributes(typeof(GamePacketAttribute), false);
+      if(attribs.Length == 0) {
+        return 0xFFFFFFFF;
+      }
+      GamePacketAttribute attrib = attribs[0] as GamePacketAttribute;
+      if(!attrib.SubTypes) {
+        return 0xFFFFFFFF;
+      }
+      return attrib.FindFirstSubtype(Data);
+    }
   }
 }
