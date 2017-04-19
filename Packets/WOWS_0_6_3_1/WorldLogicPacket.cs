@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using BoatReplayLib.Interfaces;
+using BoatReplayLib.Interfaces.SuperTemplates;
 
 namespace BoatReplayLib.Packets.WOWS_0_6_3_1 {
   [GamePacket(Type = 0x7, Name = "WorldLogic", SubTypes = true)]
-  public class WorldLogicPacket : IGamePacketTemplate, IDisposable {
+  public class WorldLogicPacket : IGamePacketTemplate, IDisposable, IRepresentative {
     public uint NetworkAvatarId;
     public uint Subtype;
     public uint Length;
@@ -16,5 +16,9 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1 {
         ((IDisposable)Data).Dispose();
       }
     }
+
+    public Type Represents() => GamePacketTemplateFactory.GetInstance().GetRepresentative(this, "Data");
+
+    public IGamePacketTemplate GetInnerData() => Data;
   }
 }

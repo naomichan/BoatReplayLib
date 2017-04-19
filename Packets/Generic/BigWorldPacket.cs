@@ -1,39 +1,38 @@
 ﻿using System;
 using BoatReplayLib.Interfaces;
+using BoatReplayLib.Interfaces.SuperTemplates;
 
 namespace BoatReplayLib.Packets.Generic {
-  public class BigWorldPacket : IGamePacketTemplate, IDisposable {
+  public class BigWorldPacket : IGamePacketTemplate, IRepresentative, IDisposable {
+    private static Type IREPRESENTATITIVE = typeof(IRepresentative);
     public uint Size;
     public uint Type;
     public float Time;
     [GamePacketField(DynamicSizeReference = "Size", PolymorphicReference = "Type")]
     public IGamePacketTemplate Data = null;
-    
+
     public void Dispose() {
       if(Data != null && typeof(IDisposable).IsAssignableFrom(Data.GetType())) {
-        ((IDisposable) Data).Dispose();
+        ((IDisposable)Data).Dispose();
       }
     }
 
     public bool HasSubtypes() {
-      object[] attribs = Data.GetType().GetCustomAttributes(typeof(GamePacketAttribute), false);
-      if(attribs.Length == 0) {
-        return false;
-      }
-      GamePacketAttribute attrib = attribs[0] as GamePacketAttribute;
-      return attrib.SubTypes;
+      return IREPRESENTATITIVE.IsAssignableFrom(Data.GetType());
     }
 
-    public uint GetSubtype() {
-      object[] attribs = Data.GetType().GetCustomAttributes(typeof(GamePacketAttribute), false);
-      if(attribs.Length == 0) {
-        return 0xFFFFFFFF;
+    public Type GetSubtype() {
+      if(!this.HasSubtypes()) {
+        return null;
       }
-      GamePacketAttribute attrib = attribs[0] as GamePacketAttribute;
-      if(!attrib.SubTypes) {
-        return 0xFFFFFFFF;
-      }
-      return attrib.FindFirstSubtype(Data);
+
+      return (Data as IRepresentative).Represents();
     }
+
+    public Type Represents() {
+      return GamePacketTemplateFactory.GetInstance().GetRepresentative(this, "Data");
+    }
+
+    public IGamePacketTemplate GetInnerData() => Data;
   }
 }

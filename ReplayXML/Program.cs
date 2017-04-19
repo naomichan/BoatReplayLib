@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Linq;
+using BoatReplayLib.Interfaces.SuperTemplates;
 using BoatReplayLib.Packets;
 
 namespace ReplayXML {
@@ -16,9 +17,11 @@ namespace ReplayXML {
         return;
       }
       using(Stream file = new FileStream(args[0], FileMode.Open, FileAccess.Read, FileShare.Read)) {
-        BigWorldPacketCollection packets = factory.ReadAll(file, factory.GetNamespace("0,6,3,1"), BigWorldPacketCollection.CollectionMode.SubType);
-        XElement avatarInfo = AvatarInfoXMLWriter.CreateXML(packets.BySubtype[0x8][0x55][0]);
-        Console.Out.WriteLine(avatarInfo.ToString());
+        BigWorldPacketCollection packets = factory.ReadAll(file, factory.GetNamespace("0,6,3,1"), BigWorldPacketCollection.COLLECT_ALL);
+        XElement avatarInfo = AvatarInfoXMLWriter.CreateXML(packets.GetFirst<IAvatarInfo>());
+        if(avatarInfo != null) {
+          Console.Out.WriteLine(avatarInfo);
+        }
       }
     }
   }

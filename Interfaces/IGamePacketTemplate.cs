@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace BoatReplayLib.Interfaces {
+﻿namespace BoatReplayLib.Interfaces {
   public interface IGamePacketTemplate {
   }
 }

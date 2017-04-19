@@ -85,6 +85,15 @@
     <Compile Include="Packets\WOWS_0_6_3_1\WorldLogicSubtypes\IsAliveSubpacket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unpickler.cs" />
+    <Compile Include="Interfaces\SuperTemplates\IAvatarInfo.cs" />
+    <Compile Include="Interfaces\SuperTemplates\IPosition.cs" />
+    <Compile Include="Interfaces\SuperTemplates\IChatMessage.cs" />
+    <Compile Include="Packets\WOWS_0_6_3_1\GameLogicSubtypes\ChatSubpacket.cs" />
+    <Compile Include="Interfaces\SuperTemplates\IRepresentative.cs" />
+    <Compile Include="Interfaces\SuperTemplates\IBlankSuperTemplate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interfaces\SuperTemplates\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

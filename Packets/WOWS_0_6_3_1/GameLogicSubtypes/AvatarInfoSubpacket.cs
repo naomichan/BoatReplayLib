@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using BoatReplayLib.Interfaces;
+using BoatReplayLib.Interfaces.SuperTemplates;
 
 namespace BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes {
   [GamePacket(Name = "AvatarInfo", Type = 0x55)]
-  public class AvatarInfoSubpacket : IGamePacketPostTemplate {
+  public class AvatarInfoSubpacket : IGamePacketPostTemplate, IAvatarInfo {
     public uint Unknown1;
     public uint Unknown2;
     public ushort Unknown3;
@@ -52,7 +53,7 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes {
           ret[i] = new Dictionary<string, object>();
           for(int j = 0; j < entry.Count; ++j) {
             object[] pair = entry[j] as object[];
-            int index = (int) Convert.ChangeType(pair[0], typeof(int));
+            int index = (int)Convert.ChangeType(pair[0], typeof(int));
             string key = $"Unknown{index}";
             if(index < KVTranslation.Length && KVTranslation[index] != null) {
               key = KVTranslation[index];
@@ -76,10 +77,14 @@ namespace BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes {
       Dictionary<string, object> d = new Dictionary<string, object>();
       d["Info"] = map;
       return d;
-     }
+    }
 
     public void PostProcessing() {
       ParsePickle();
+    }
+
+    public IReadOnlyDictionary<string, object>[] GetAvatarInfo() {
+      return ParsePickle();
     }
   }
 }

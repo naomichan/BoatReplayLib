@@ -1,18 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using BoatReplayLib.Packets.Generic;
-using BoatReplayLib.Packets.WOWS_0_6_3_1;
-using BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes;
+using BoatReplayLib.Interfaces;
+using BoatReplayLib.Interfaces.SuperTemplates;
 
 namespace ReplayXML {
   public class AvatarInfoXMLWriter {
     private static Type T_INT = typeof(int);
     private static Type T_LONG = typeof(long);
 
-    public static XElement CreateXML(BigWorldPacket packet) {
-      GameLogicPacket logic = packet.Data as GameLogicPacket;
-      return CreateXML(logic.Data as AvatarInfoSubpacket);
+    public static XElement CreateXML(IGamePacketTemplate packet) {
+      if(packet == null) {
+        return null;
+      }
+
+      Type t = typeof(IAvatarInfo);
+      Type r = typeof(IRepresentative);
+      while(r.IsAssignableFrom(packet.GetType())) {
+        packet = (packet as IRepresentative).GetInnerData();
+        if(t.IsAssignableFrom(packet.GetType())) {
+          return CreateXML(packet as IAvatarInfo);
+        }
+      }
+      return null;
     }
 
     private static void DictToXML(XElement root, Dictionary<object, object> dict) {
@@ -44,10 +54,14 @@ namespace ReplayXML {
       }
     }
 
-    public static XElement CreateXML(AvatarInfoSubpacket info) {
+    public static XElement CreateXML(IAvatarInfo info) {
+      if(info == null) {
+        return null;
+      }
+
       XElement root = new XElement("AvatarInfo");
 
-      IReadOnlyDictionary<string, object>[] data = info.ParsePickle();
+      IReadOnlyDictionary<string, object>[] data = info.GetAvatarInfo();
 
       foreach(IReadOnlyDictionary<string, object> entry in data) {
         XElement player = new XElement("Player");
@@ -62,7 +76,7 @@ namespace ReplayXML {
         player.SetAttributeValue("Name", name);
 
         root.Add(player);
-        
+
         foreach(KeyValuePair<string, object> pair in entry) {
           if(player.Attribute(pair.Key) != null) {
             continue;

@@ -1,17 +1,18 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.ExceptionServices;
 using System.Text;
 using BoatReplayLib.Interfaces;
+using BoatReplayLib.Interfaces.SuperTemplates;
 using BoatReplayLib.Packets.Generic;
 
 namespace BoatReplayLib.Packets {
   public class GamePacketTemplateFactory : IDisposable {
     private static GamePacketTemplateFactory __INSTANCE = null;
     private static Type MEMORYTEMPLATE = typeof(MemoryPacket);
+    private static Type REPRESENATATIVE = typeof(IRepresentative);
     private static Type BIGWORLDPACKET = typeof(BigWorldPacket);
     private static Type GAMEPACKETTEMPLATE = typeof(IGamePacketTemplate);
     private static Type GAMEPACKETPPTEMPLATE = typeof(IGamePacketPostTemplate);
@@ -27,6 +28,45 @@ namespace BoatReplayLib.Packets {
       foreach(Type Tns in AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(p => T.IsAssignableFrom(p) && !p.IsInterface)) {
         LoadTemplates(Tns);
       }
+    }
+
+    public Type GetRepresentative(IGamePacketTemplate template, string field) {
+      if(!REPRESENATATIVE.IsAssignableFrom(template.GetType())) {
+        return template.GetType();
+      }
+
+      object value = template.GetType().GetField(field).GetValue(template);
+      if(value == null) {
+        return template.GetType();
+      }
+
+      IGamePacketTemplate child = value as IGamePacketTemplate;
+      if(child == null) {
+        return template.GetType();
+      }
+
+      if(REPRESENATATIVE.IsAssignableFrom(child.GetType())) {
+        return (child as IRepresentative).Represents();
+      }
+
+      return child.GetType();
+    }
+
+
+    public uint GetPacketId(Type t) {
+      GamePacketAttribute subattrib = GetGamePacketAttribute(t);
+      if(subattrib == null) {
+        return 0xDEADBEEF;
+      }
+      return subattrib.Type;
+    }
+
+    public string GetName(Type t) {
+      GamePacketAttribute subattrib = GetGamePacketAttribute(t);
+      if(subattrib == null) {
+        return string.Empty;
+      }
+      return subattrib.Name;
     }
 
     public static Type[] GetTemplates(string ns) {
@@ -268,7 +308,7 @@ namespace BoatReplayLib.Packets {
     public Type GetNamespace(string version) {
       string fixedVersion = string.Join(".", version.Split(new char[3] { ' ', ',', '.' }, StringSplitOptions.RemoveEmptyEntries));
       foreach(KeyValuePair<string, Type> pair in namespaceCache) {
-        if(pair.Key.StartsWith(fixedVersion) || fixedVersion.StartsWith(pair.Key)) {
+        if(pair.Key.StartsWith(fixedVersion, StringComparison.Ordinal) || fixedVersion.StartsWith(pair.Key, StringComparison.Ordinal)) {
           return pair.Value;
         }
       }
@@ -309,7 +349,7 @@ namespace BoatReplayLib.Packets {
       return attribs[0] as GamePacketFieldAttribute;
     }
 
-    public HashSet<string> MissingAnnoy = new HashSet<string>();
+    private HashSet<string> MissingAnnoy = new HashSet<string>();
 
     public Type GetSubtype(Type t, uint v, Type ns) {
       GamePacketAttribute attrib = GetGamePacketAttribute(t);
