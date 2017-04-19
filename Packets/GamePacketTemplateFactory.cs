@@ -316,13 +316,23 @@ namespace BoatReplayLib.Packets {
     }
 
     private void LoadTemplates(Type Tns) {
+      if(templateCache.ContainsKey(Tns.FullName)) {
+        return;
+      }
+
       IGamePacketNamespace ns = Activator.CreateInstance(Tns) as IGamePacketNamespace;
       if(ns == null) {
         return;
       }
 
       namespaceCache[ns.GameVersion()] = Tns;
-      templateCache[Tns.FullName] = new Dictionary<uint, Type>();
+
+      if(ns.Inherits() != null) {
+        LoadTemplates(ns.Inherits());
+        templateCache[Tns.FullName] = new Dictionary<uint, Type>(templateCache[ns.Inherits().FullName]);
+      } else {
+        templateCache[Tns.FullName] = new Dictionary<uint, Type>();
+      }
 
       foreach(Type T in GetTemplates(Tns.Namespace)) {
         GamePacketAttribute attrib = GetGamePacketAttribute(T);
