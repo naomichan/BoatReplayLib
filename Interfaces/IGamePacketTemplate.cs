@@ -1,4 +1,4 @@
 ﻿namespace BoatReplayLib.Interfaces {
-  public interface IGamePacketTemplate {
-  }
+    public interface IGamePacketTemplate {
+    }
 }

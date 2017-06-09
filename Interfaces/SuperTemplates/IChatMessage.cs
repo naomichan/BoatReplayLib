@@ -1,5 +1,5 @@
 ﻿namespace BoatReplayLib.Interfaces.SuperTemplates {
-  public interface IChatMessage : IBlankSuperTemplate {
-    string GetMessage();
-  }
+    public interface IChatMessage : IBlankSuperTemplate {
+        string GetMessage();
+    }
 }

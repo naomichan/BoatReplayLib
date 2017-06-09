@@ -1,4 +1,4 @@
 ﻿namespace BoatReplayLib.Interfaces.SuperTemplates {
-  public interface IBlankSuperTemplate {
-  }
+    public interface IBlankSuperTemplate {
+    }
 }
