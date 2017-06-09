@@ -88,8 +88,10 @@ namespace BoatReplayLib.Packets {
             return ReadAll(data, ns, BigWorldPacketCollection.CollectionMode.Packets);
         }
 
-
         public BigWorldPacketCollection ReadAll(Stream data, Type ns, BigWorldPacketCollection.CollectionMode mode) {
+            if (ns == null) {
+                return null;
+            }
             BigWorldPacketCollection packets = new BigWorldPacketCollection(mode);
             while (data.Position < data.Length) {
                 packets.Add(Read(data, ns) as BigWorldPacket);
@@ -287,7 +289,7 @@ namespace BoatReplayLib.Packets {
         }
 
         private Dictionary<string, Dictionary<uint, Type>> templateCache = new Dictionary<string, Dictionary<uint, Type>>();
-        private Dictionary<string, Type> namespaceCache = new Dictionary<string, Type>();
+        private Dictionary<ulong, Type> namespaceCache = new Dictionary<ulong, Type>();
 
         public Type GetTemplate(Type ns, uint type) {
             if (!templateCache.ContainsKey(ns.FullName)) {
@@ -305,14 +307,43 @@ namespace BoatReplayLib.Packets {
             return null;
         }
 
-        public Type GetNamespace(string version) {
-            string fixedVersion = string.Join(".", version.Split(new char[3] { ' ', ',', '.' }, StringSplitOptions.RemoveEmptyEntries));
-            foreach (KeyValuePair<string, Type> pair in namespaceCache) {
-                if (pair.Key.StartsWith(fixedVersion, StringComparison.Ordinal) || fixedVersion.StartsWith(pair.Key, StringComparison.Ordinal)) {
-                    return pair.Value;
+        public static ulong GenerateGameVersion(params short[] version) {
+            return ((ulong)version[0] << 48) + ((ulong)version[1] << 16) + (ulong)version[2];
+        }
+
+        public Type GetClosestNamespace(short major, short minor, short patch) {
+            ulong version = GenerateGameVersion(major, minor, patch);
+            KeyValuePair<ulong, Type> ret = new KeyValuePair<ulong, Type>(0, null);
+            foreach (KeyValuePair<ulong, Type> pair in namespaceCache) {
+                if (version >= pair.Key && pair.Key > ret.Key) {
+                    ret = pair;
                 }
             }
+            return ret.Value;
+        }
+
+        public Type GetClosestNamespace(string version) {
+            short[] versions = version.Split(new char[3] { ' ', ',', '.' }, StringSplitOptions.RemoveEmptyEntries).Take(3).Select(short.Parse).ToArray();
+            if (versions.Length < 3) {
+                return null;
+            }
+            return GetClosestNamespace(versions[0], versions[1], versions[2]);
+        }
+
+        public Type GetNamespace(short major, short minor, short patch) {
+            ulong version = GenerateGameVersion(major, minor, patch);
+            if (namespaceCache.ContainsKey(version)) {
+                return namespaceCache[version];
+            }
             return null;
+        }
+
+        public Type GetNamespace(string version) {
+            short[] versions = version.Split(new char[3] { ' ', ',', '.' }, StringSplitOptions.RemoveEmptyEntries).Take(3).Select(short.Parse).ToArray();
+            if (versions.Length < 3) {
+                return null;
+            }
+            return GetNamespace(versions[0], versions[1], versions[2]);
         }
 
         private void LoadTemplates(Type Tns) {
@@ -325,7 +356,7 @@ namespace BoatReplayLib.Packets {
                 return;
             }
 
-            namespaceCache[ns.GameVersion()] = Tns;
+            namespaceCache[GenerateGameVersion(ns.GameVersion())] = Tns;
 
             if (ns.Inherits() != null) {
                 LoadTemplates(ns.Inherits());

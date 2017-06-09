@@ -2,7 +2,7 @@
 
 namespace BoatReplayLib.Interfaces {
     public interface IGamePacketNamespace {
-        string GameVersion();
+        short[] GameVersion();
 
         Type Inherits();
     }

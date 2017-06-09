@@ -46,6 +46,9 @@ namespace BoatReplayLib.Packets {
         }
 
         public void Add(BigWorldPacket item) {
+            if (item == null) {
+                return;
+            }
             if (frozen) {
                 return;
             }
