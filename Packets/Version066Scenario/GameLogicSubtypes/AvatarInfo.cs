@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using BoatReplayLib.Interfaces;
 using BoatReplayLib.Interfaces.SuperTemplates;
 
-namespace BoatReplayLib.Packets.Version066Scenario.GameLogicSubpackets {
+namespace BoatReplayLib.Packets.Version066Scenario.GameLogicSubtypes {
     [GamePacket(Name = "AvatarInfo", Type = 0x55)]
     public class AvatarInfo : IGamePacketPostTemplate, IAvatarInfo {
         public uint Unknown1;
@@ -20,24 +20,25 @@ namespace BoatReplayLib.Packets.Version066Scenario.GameLogicSubpackets {
             "ClanTag", // 2
             null, // 3
             "Id", // 4
-            "IsAlly", // 5
+            null, // 5
             null, // 6
-            "IsEnemy", // 7
+            null, // 7
             null, // 8
             null, // 9
             null, // 10
-            "Health", // 11
-            "Name", // 12
+            null, // 11
+            null, // 12
             null, // 13
-            "DivisionId", // 14
-            null, // 15
-            "SquadId", // 16
-            "Loadout", // 17
-            "WorldAvatarId", // 18
-            "ShipId", // 19
+            null, // 14
+            "Health", // 15
+            "Name", // 16
+            null, // 17
+            null, // 18
+            null, // 19
             null, // 20
             null, // 21
-            null // 22
+            "WorldAvatarId", // 22
+            "ShipId",
         };
 
         private Dictionary<string, object>[] map = null;

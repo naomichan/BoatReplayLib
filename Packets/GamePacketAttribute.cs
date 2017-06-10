@@ -8,6 +8,7 @@ namespace BoatReplayLib.Packets {
         public uint Type;
         public bool SubTypes = false;
         public string Name;
+        public bool IsUnknown = false;
 
         public GamePacketAttribute() {
         }

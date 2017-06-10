@@ -3,6 +3,7 @@ using BoatReplayLib.Interfaces;
 using BoatReplayLib.Interfaces.SuperTemplates;
 
 namespace BoatReplayLib.Packets.Version066Scenario {
+    [GamePacket(Name = "GameLogic", Type = 0x08, SubTypes = true)]
     public class GameLogic : IGamePacketTemplate, IDisposable, IRepresentative {
         public uint NetworkAvatarId;
         public uint Subtype;

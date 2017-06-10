@@ -1,7 +1,7 @@
 ﻿using BoatReplayLib.Interfaces;
 using BoatReplayLib.Interfaces.SuperTemplates;
 
-namespace BoatReplayLib.Packets.Version066Scenario.GameLogicSubpackets {
+namespace BoatReplayLib.Packets.Version066Scenario.GameLogicSubtypes {
     [GamePacket(Name = "Message", Type = 0x44)]
     public class ChatMesssge : IGamePacketTemplate, IChatMessage {
         public uint SenderAvatarId;

@@ -37,6 +37,8 @@ namespace BoatReplayLib.Packets {
         private CollectionMode mode;
         public CollectionMode Mode => mode;
 
+        public static bool SkipUnknown = false;
+
         public BigWorldPacketCollection(CollectionMode mode) {
             this.mode = mode;
         }
@@ -50,6 +52,9 @@ namespace BoatReplayLib.Packets {
                 return;
             }
             if (frozen) {
+                return;
+            }
+            if(SkipUnknown && GamePacketTemplateFactory.GetInstance().GetGamePacketAttribute(item.Represents()).IsUnknown) {
                 return;
             }
             if (mode.HasFlag(CollectionMode.Packets)) {

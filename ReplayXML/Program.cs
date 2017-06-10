@@ -4,6 +4,7 @@ using System.Xml.Linq;
 using BoatReplayLib.Packets;
 using BoatReplayLib;
 using BoatReplayLib.Interfaces.SuperTemplates;
+using BoatReplayLib.Packets.Generic;
 
 namespace ReplayXML {
     class Program {
@@ -24,13 +25,18 @@ namespace ReplayXML {
                             replay.Data.CopyTo(output);
                         }
                     }
-                    replay.Data.Position = 0;
+                    GamePacketTemplateFactory.WHINEY = false;
                     Type ns = factory.GetClosestNamespace(replay.GameVersion[0], replay.GameVersion[1], replay.gameVersion[2]);
-                    BigWorldPacketCollection packets = factory.ReadAll(replay.Data, ns, BigWorldPacketCollection.COLLECT_ALL);
-                    XElement avatarInfo = AvatarInfoXMLWriter.CreateXML(packets.GetFirst<IAvatarInfo>());
-                    if (avatarInfo != null) {
-                        Console.Out.WriteLine(avatarInfo);
+					BigWorldPacketCollection packets = factory.ReadAll(replay.Data, ns, BigWorldPacketCollection.COLLECT_ALL);
+					XElement root = new XElement("Replay", new XAttribute("Version", replay.ParsedJSON.clientVersionFromExe));
+                    foreach(BigWorldPacket packet in packets.Packets) {
+                        XElement element = XMLWriter.CreateXML(packet);
+                        if(element == null) {
+                            continue;
+                        }
+                        root.Add(element);
                     }
+                    Console.Out.WriteLine(root);
                 }
             }
         }

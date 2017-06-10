@@ -54,7 +54,6 @@ namespace BoatReplayLib.Packets {
             return child.GetType();
         }
 
-
         public uint GetPacketId(Type t) {
             GamePacketAttribute subattrib = GetGamePacketAttribute(t);
             if (subattrib == null) {
@@ -349,7 +348,7 @@ namespace BoatReplayLib.Packets {
             return GetNamespace(versions[0], versions[1], versions[2]);
         }
 
-        private void LoadTemplates(Type Tns) {
+        public void LoadTemplates(Type Tns) {
             if (templateCache.ContainsKey(Tns.FullName)) {
                 return;
             }
@@ -377,7 +376,7 @@ namespace BoatReplayLib.Packets {
             }
         }
 
-        private GamePacketAttribute GetGamePacketAttribute(Type T) {
+        public GamePacketAttribute GetGamePacketAttribute(Type T) {
             object[] attribs = T.GetCustomAttributes(GAMEPACKETATTRIB, true);
             if (attribs.Length == 0) {
                 return null;

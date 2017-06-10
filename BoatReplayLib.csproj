@@ -73,8 +73,8 @@
     <Compile Include="Interfaces\SuperTemplates\IRepresentative.cs" />
     <Compile Include="Interfaces\SuperTemplates\IBlankSuperTemplate.cs" />
     <Compile Include="Packets\Version066Scenario\ScenarioNamespace.cs" />
-    <Compile Include="Packets\Version066Scenario\GameLogicSubpackets\ChatMessage.cs" />
-    <Compile Include="Packets\Version066Scenario\GameLogicSubpackets\AvatarInfo.cs" />
+    <Compile Include="Packets\Version066Scenario\GameLogicSubtypes\ChatMessage.cs" />
+    <Compile Include="Packets\Version066Scenario\GameLogicSubtypes\AvatarInfo.cs" />
     <Compile Include="Packets\Version066Scenario\GameLogic.cs" />
   </ItemGroup>
   <ItemGroup />
@@ -83,7 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Packets\Version066Scenario\" />
-    <Folder Include="Packets\Version066Scenario\GameLogicSubpackets\" />
+    <Folder Include="Packets\Version066Scenario\GameLogicSubtypes\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
