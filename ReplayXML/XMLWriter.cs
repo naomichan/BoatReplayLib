@@ -82,7 +82,7 @@ namespace ReplayXML {
                 }
                 root.Add(element);
             } else if(AVATAR.IsAssignableFrom(t)) {
-                root.Add(AvatarInfoXMLWriter.CreateXML(root, packet as IAvatarInfo));
+                AvatarInfoXMLWriter.CreateXML(root, packet as IAvatarInfo);
             } else {
 				FieldInfo[] fields = t.GetFields();
 				foreach (FieldInfo field in fields) {
