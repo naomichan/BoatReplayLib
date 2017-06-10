@@ -19,7 +19,8 @@ namespace ReplayXML {
             while (r.IsAssignableFrom(packet.GetType())) {
                 packet = (packet as IRepresentative).GetInnerData();
                 if (t.IsAssignableFrom(packet.GetType())) {
-                    return CreateXML(packet as IAvatarInfo);
+                    XElement root = new XElement("AvatarInfo");
+                    return CreateXML(root, packet as IAvatarInfo);
                 }
             }
             return null;
@@ -54,12 +55,10 @@ namespace ReplayXML {
             }
         }
 
-        public static XElement CreateXML(IAvatarInfo info) {
+        public static XElement CreateXML(XElement root, IAvatarInfo info) {
             if (info == null) {
                 return null;
             }
-
-            XElement root = new XElement("AvatarInfo");
 
             IReadOnlyDictionary<string, object>[] data = info.GetAvatarInfo();
 

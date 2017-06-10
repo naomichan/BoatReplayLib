@@ -185,6 +185,9 @@ namespace BoatReplayLib.Packets {
                 case "SByte":
                     return reader.ReadSByte();
                 case "MemoryStream":
+                    if(!WHINEY) {
+                        return null;
+                    }
                     return new MemoryStream(reader.ReadBytes((int)size));
                 case "IGamePacketTemplate": {
                         MemoryStream sandbox = new MemoryStream(reader.ReadBytes((int)size));

@@ -22,7 +22,12 @@ namespace ReplayXML {
                 CreateXMLInnerArray(element, (Array)obj, field, fieldType);
             } else {
                 if (GPT.IsAssignableFrom(fieldType)) {
-                    CreateXML(element, obj as IGamePacketTemplate);
+					CreateXML(element, obj as IGamePacketTemplate);
+                    Type t = (obj as IGamePacketTemplate).GetType();
+					GamePacketAttribute attr = GamePacketTemplateFactory.GetInstance().GetGamePacketAttribute(t);
+					if (attr != null) {
+						element.SetAttributeValue("Type", attr.Name);
+                    }
                 } else {
                     element.SetValue(obj);
                 }
@@ -77,7 +82,7 @@ namespace ReplayXML {
                 }
                 root.Add(element);
             } else if(AVATAR.IsAssignableFrom(t)) {
-                root.Add(AvatarInfoXMLWriter.CreateXML(packet as IAvatarInfo));
+                root.Add(AvatarInfoXMLWriter.CreateXML(root, packet as IAvatarInfo));
             } else {
 				FieldInfo[] fields = t.GetFields();
 				foreach (FieldInfo field in fields) {
