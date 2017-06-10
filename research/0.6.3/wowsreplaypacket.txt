@@ -1,0 +1,168 @@
+generic packet:
+
+  uint32 size;
+  uint32 type;
+  float32 time;
+  byte   data[size];
+
+packet type 0x00: unknown (not enough data)
+
+  uint32 avatar_id;
+  uint16 version;
+  uint16 unknown;
+  uint32 unknown;
+  uint32 zero;
+  uint16 zero;
+
+packet type 0x01: unknown (not enough data)
+
+  uint32 avatar_id;
+  uint32 version;
+  uint32 zero;
+  float32 x;
+  float32 y;
+  float32 z;
+  float32 yaw; // ?
+  uint32 zero;
+  uint32 zero;
+  uint32 unknown;
+  uint32 avatar_id; // subtract 1 to get id?
+  uint32 zero;
+  uint32 zero;
+  uint32 zero;
+  uint32 unknown;
+  uint32 unknown;
+  uint16s unknown;
+
+packet type 0x02: start
+
+  uint32 avatar_id;
+  byte zero;
+
+packet type 0x03: unknown
+
+  uint32 avatar_id;
+  uint32 version;
+  uint32 zero;
+
+packet type 0x04: disconnect
+
+  uint32 avatar_id;
+
+packet type 0x05: unknown (indistinctive data)
+
+  uint32 avatar_id;
+  uint16 subtype;
+  uint32 version;
+
+  subtype 0x000: todo
+
+packet type 0x07: unknown
+
+  uint32 avatar_id;
+  uint32 subtype;
+  uint32 length;
+  byte data[length];
+
+  subtype 0x04: is_alive
+
+    bool (byte) is_alive;
+
+packet type 0x08: game logic
+
+  uint32 avatar_id;
+  uint32 subtype;
+  uint32 length;
+  byte data[length];
+
+  see wowsreplaypacket_8.txt
+
+packet type 0x0A: position/rotation?
+
+  uint32 avatar_id;
+  uint32 version;
+  uint32 zero;
+  float32 x;
+  float32 y;
+  float32 z;
+  uint32 unknown;
+  uint32 zero;
+  uint32 unknown;
+  float32 yaw;
+  float32 unknown;
+  float32 roll;
+
+packet type 0x0E: ?
+
+  uint32 length;
+  char   unknown[length];
+
+packet type 0x0F: ?
+
+  uint32 unknown;
+  float32 unknown;
+
+packet type 0x10: ?
+
+  byte zero;
+
+packet type 0x13: ?
+
+  nothing
+
+packet type 0x16: game version
+
+  uint32 length;
+  char   version[length]
+
+
+packet type 0x18: dummy data?
+
+  // every packet is the same
+
+  uint32 zero[40];
+  float32 neg_one[3];
+
+packet type 0x20: spectate
+
+  uint32 avatar_id;
+
+packet type 0x22: unknown
+
+  uint32 avatar_id;
+  byte unknown;
+  uint32 length;
+  byte data[length];
+
+packet type 0x24: camera rotation matrix
+
+  float32 matrix[14];
+
+packet type 0x25: unknown
+
+  uint32 avatar_id;
+  uint32 unknown;
+  uint16 unknown;
+
+packet type 0x26: unknown
+
+  uint32 unknown;
+
+packet type 0x27: map
+
+  uint32 version;
+  float32 load_time; // ?
+  uint32 map_id;
+  uint32 length;
+  char name[length];
+  float32 matrix[16];
+  byte unknown;
+  byte unknown;
+  byte unknown;
+
+packet type 0xFFFFFFFF: end
+
+  uint32 unknown;
+  uint32 unknown;
+  uint32 unknown;
+  uint32 unknown;

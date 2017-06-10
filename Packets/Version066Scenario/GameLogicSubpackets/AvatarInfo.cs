@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using BoatReplayLib.Interfaces;
 using BoatReplayLib.Interfaces.SuperTemplates;
 
-namespace BoatReplayLib.Packets.WOWS_0_6_3_1.GameLogicSubtypes {
+namespace BoatReplayLib.Packets.Version066Scenario.GameLogicSubpackets {
     [GamePacket(Name = "AvatarInfo", Type = 0x55)]
-    public class AvatarInfoSubpacket : IGamePacketPostTemplate, IAvatarInfo {
+    public class AvatarInfo : IGamePacketPostTemplate, IAvatarInfo {
         public uint Unknown1;
         public uint Unknown2;
         public ushort Unknown3;

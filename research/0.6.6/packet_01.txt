@@ -1,0 +1,9 @@
+uint networkId;
+uint unknown;
+uint type;
+float unknown;
+uint unknown;
+float2 xy;
+uint unknown;
+uint unknown;
+uint size;

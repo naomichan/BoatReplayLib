@@ -1,0 +1,8 @@
+uint networkId;
+ushort type;
+uint unknown;
+uint unknown;
+float4 unknown;
+uint unknown;
+uint unknown;
+uint size;

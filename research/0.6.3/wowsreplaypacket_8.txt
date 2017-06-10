@@ -1,0 +1,128 @@
+subtype 0x0F: damage?
+
+subtype 0x12: heading
+
+  float32 pitch?;
+  float32 yaw?;
+
+subtype 0x19: ?
+
+  uint32 unknown;
+  float32 abc[3];
+  uint32 unknown;
+  uint32 zero;
+  byte zero;
+
+subtype 0x23: math pickle
+
+  byte size;
+  byte data[size];
+
+subtype 0x26: DoT?
+
+  byte type;
+  uint32 source_avatar_id;
+
+subtype 0x2E: spotting?
+
+  uint32 spotted_avatar_id;
+  uint32 spotting_avatar_id;
+  uint32 ?; // spotting damage?
+
+subtype 0x3B: hit/damage/ribbon?
+  uint32 unknown;
+  uint16 unknown;
+  uint16 unknown;
+  uint32 type?;
+  uint32 target_avatar_id;
+  uint16 unknown;
+  uint16 unknown;
+  uint32 unknown;
+  uint32 unknown;
+  uint16 unknown;
+  uint16 unknown;
+  byte more;
+  if more == 0x01 then
+    uint32 more_unknown;
+
+subtype 0x44: chat
+
+  uint32 sender_avatar_id;
+  uint8 type_length;
+  char type[type_length]; // battle_common, battle_team
+  uint8 message_length;
+  char message[message_length];
+
+subtype 0x46: destroy entity?
+  byte type;
+  uint32 target_avatar_id;
+
+  subsubtype 0x2: death
+    byte unknown;
+    uint16 unknown;
+    byte unknown;
+    uint32 killer_avatar_id;
+    uint16 unknown;
+    uint16 unknown;
+    byte unknown;
+
+subtype 0x52: damage?
+
+subtype 0x55: avatar info (contains info such as avatar_id)
+
+  uint32 unknown;
+  uint32 unknown;
+  uint16 unknown;
+  uint16 size;
+  uint16 unknown;
+  char pickle[size]; // Python Binary Pickle
+  uint32 unknown;
+  uint16 unknown;
+
+  // the pickle is set up into arrays. Those arrays then have an array of tuples for various values.
+  // in json it would look like
+
+  [
+    [ // player 1
+      [type, value],
+      [type, value]
+    ],
+    [ // player 2
+      [type, value],
+      [type, value]
+    ]
+  ]
+
+  // as an example for the clan WGA
+
+  [
+    [
+      [2, 'WGA']
+    ]
+  ]
+
+  as of 0.6.3.1
+
+  type 0: user_id (int64)
+  type 1: network_avatar_id (int32)
+  type 2: clan (unicode string)
+  type 3: ? (int32)
+  type 4: id (int32, json)
+  type 5: is_ally (boolean)
+  type 6: ? (boolean)
+  type 7: is_enemy (boolean)
+  type 8: is_? (boolean)
+  type 9: is_? (boolean)
+  type 10: is_? (boolean)
+  type 11: unknown_id (int32)
+  type 12: name (unicode string)
+  type 13: division_id (int32)
+  type 14: unknown (int32)
+  type 15: division_id (int32)
+  type 16: unknown (int32)
+  type 17: loadout (dictionary)
+  type 18: world_avatar_id (int32)
+  type 19: ship_id (int32)
+  type 20: unknown (int32)
+  type 21: is_? (boolean)
+  type 22: is_? (boolean)

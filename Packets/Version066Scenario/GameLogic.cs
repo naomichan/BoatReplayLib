@@ -2,9 +2,8 @@
 using BoatReplayLib.Interfaces;
 using BoatReplayLib.Interfaces.SuperTemplates;
 
-namespace BoatReplayLib.Packets.WOWS_0_6_3_1 {
-    [GamePacket(Type = 0x7, Name = "WorldLogic", SubTypes = true)]
-    public class WorldLogicPacket : IGamePacketTemplate, IDisposable, IRepresentative {
+namespace BoatReplayLib.Packets.Version066Scenario {
+    public class GameLogic : IGamePacketTemplate, IDisposable, IRepresentative {
         public uint NetworkAvatarId;
         public uint Subtype;
         public uint Length;

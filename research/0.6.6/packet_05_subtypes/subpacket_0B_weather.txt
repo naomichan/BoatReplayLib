@@ -1,0 +1,21 @@
+packet:
+
+ushort unknown;
+ushort transitions;
+ushort unknown;
+byte unknown;
+byte unknown;
+uint unknown;
+byte unknown;
+weather[transitions] weathers;
+byte size;
+char[size] config;
+
+weather:
+
+parameter[5] parameters;
+
+parameter:
+
+float x;
+byte unknown;

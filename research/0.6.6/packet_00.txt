@@ -1,0 +1,4 @@
+ushort unknown;
+ushort unknown;
+ushort type;
+uint size;

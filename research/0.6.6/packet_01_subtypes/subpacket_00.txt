@@ -1,0 +1,7 @@
+uint networkId;
+uint unknown;
+uint unknown;
+uint unknown;
+ushort unknown;
+uint unknown;
+uint unknown;

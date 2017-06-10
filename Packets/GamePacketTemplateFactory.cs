@@ -22,6 +22,8 @@ namespace BoatReplayLib.Packets {
 
         private static Dictionary<string, Type[]> reflectTemplateCache = new Dictionary<string, Type[]>();
 
+        public static bool WHINEY = System.Diagnostics.Debugger.IsAttached;
+
         public GamePacketTemplateFactory() {
             Type T = GAMEPACKETNS;
 
@@ -112,9 +114,8 @@ namespace BoatReplayLib.Packets {
                 } else {
                     field.SetValue(instance, ReadGeneric(reader, attrib, instance, field, field.FieldType, ns));
                 }
-            } catch (Exception ex) {
+            } catch {
                 Console.Error.WriteLine("{0} does not match packet data!", template.FullName);
-                Console.Error.WriteLine(ex.ToString());
                 if (System.Diagnostics.Debugger.IsAttached) {
                     throw;
                 }
@@ -301,7 +302,9 @@ namespace BoatReplayLib.Packets {
             }
 
             if (MissingAnnoy.Add(ns.FullName + type.ToString())) {
-                Console.Error.WriteLine("Missing Type {0:X} for {1}", type, ns.FullName);
+                if (WHINEY) {
+                    Console.Error.WriteLine("Missing Type {0:X} for {1}", type, ns.FullName);
+                }
             }
 
             return null;
@@ -407,7 +410,9 @@ namespace BoatReplayLib.Packets {
             }
 
             if (MissingAnnoy.Add(t.FullName + ns.FullName + v.ToString())) {
-                Console.Error.WriteLine("Missing Subtype {0:X} for {1} ({2})", v, t.Name, ns.FullName);
+                if (WHINEY) {
+                    Console.Error.WriteLine("Missing Subtype {0:X} for {1} ({2})", v, t.Name, ns.FullName);
+                }
             }
             return null;
         }
