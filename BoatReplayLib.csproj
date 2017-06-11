@@ -85,6 +85,9 @@
     <Compile Include="Packets\Version066Scenario\WorldLogicSubtypes\IsAlive.cs" />
     <Compile Include="Packets\Version066Scenario\WorldLogicSubtypes\TotalDamage.cs" />
     <Compile Include="Packets\Version066Scenario\WorldLogicSubtypes\Health.cs" />
+    <Compile Include="Packets\Version066Scenario\GameLogicSubtypes\Ribbon.cs" />
+    <Compile Include="Interfaces\SuperTemplates\IRibbon.cs" />
+    <Compile Include="Packets\Generic\GameTypes.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -179,6 +179,10 @@ namespace BoatReplayLib.Packets {
                 encoding = attrib.GetEncoding();
             }
 
+            if (fieldType.IsEnum) {
+                fieldType = Enum.GetUnderlyingType(fieldType);
+            }
+
             switch (fieldType.Name) {
                 case "String":
                     byte[] bytes = reader.ReadBytes((int)size);

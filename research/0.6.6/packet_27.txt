@@ -1,0 +1,8 @@
+uint unknown;
+ushort unknown;
+uint unknown;
+ushort unknown;
+uint name_length;
+char[name_length] name;
+matrix4 matrix;
+byte unknown;

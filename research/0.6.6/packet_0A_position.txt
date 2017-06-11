@@ -1,0 +1,9 @@
+uint worldId;
+uint unknown;
+uint unknown;
+float3 position;
+uint unknown;
+uint unknown;
+uint unknown;
+float3 rotation;
+byte unknown;

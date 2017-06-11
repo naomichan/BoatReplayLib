@@ -1,0 +1,5 @@
+uint senderId;
+byte channel_length;
+char[channel_length] channel;
+byte message_length;
+char[message_length] message;
