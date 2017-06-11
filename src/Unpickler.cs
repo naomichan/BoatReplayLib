@@ -84,16 +84,11 @@ namespace BoatReplayLib {
                 Dictionary<int, object> memo = new Dictionary<int, object>();
                 Stack<Stack<object>> metastack = new Stack<Stack<object>>();
 
-                // disable unused warning.
-#pragma warning disable 0219
-                byte protocol = 2;
-#pragma warning restore 0219
-
                 while (data.Position < data.Length) {
                     byte op = reader.ReadByte();
                     switch (op) {
                         case OPCODE_PROTO:
-                            protocol = reader.ReadByte();
+                            reader.ReadByte();
                             break;
 						case OPCODE_EMPTY_LIST:
                             stack.Push(new List<object>());
