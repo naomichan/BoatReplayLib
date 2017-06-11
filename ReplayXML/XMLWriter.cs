@@ -83,7 +83,8 @@ namespace ReplayXML {
                 if(element == null) {
                     return;
                 }
-                root.Add(element);
+                root.SetAttributeValue("Type", element.Name);
+                root.Add(element.Elements());
             } else if(AVATAR.IsAssignableFrom(t)) {
                 AvatarInfoXMLWriter.CreateXML(root, packet as IAvatarInfo);
             } else {
@@ -92,6 +93,9 @@ namespace ReplayXML {
 					if (!field.IsPublic) {
 						continue;
 					}
+                    if (GamePacketTemplateFactory.GetInstance().IsReferenced(t, field)) {
+                        continue;
+                    }
 					CreateXMLInner(root, field.GetValue(packet), field, field.FieldType);
 				}
             }

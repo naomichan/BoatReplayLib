@@ -147,6 +147,25 @@ namespace BoatReplayLib.Packets {
             return instance;
         }
 
+        public bool IsReferenced(Type template, FieldInfo targetField) {
+            FieldInfo[] fields = template.GetFields();
+            foreach (FieldInfo field in fields) {
+                if (!field.IsPublic) {
+                    continue;
+                }
+                GamePacketFieldAttribute attrib = GetGamePacketFieldAttribute(field);
+                if (attrib != null) {
+                    if (attrib.DynamicSizeReference == targetField.Name) {
+                        return true;
+                    }
+                    if (attrib.PolymorphicReference == targetField.Name) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         private object ReadGeneric(BinaryReader reader, GamePacketFieldAttribute attrib, IGamePacketTemplate instance, FieldInfo field, Type fieldType, Type ns) {
             if (attrib != null && attrib.Ignore == true) {
                 return null;
