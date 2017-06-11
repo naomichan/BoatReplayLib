@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoatReplayLib", "BoatReplayLib.csproj", "{B8ACCD7A-7782-4BFF-A543-21A9C2EF500A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoatReplayLib", "src\BoatReplayLib.csproj", "{B8ACCD7A-7782-4BFF-A543-21A9C2EF500A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReplayXML", "ReplayXML\ReplayXML.csproj", "{1EEDAB23-C075-42D2-B18F-02DE355AEEF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReplayXML", "tool\ReplayXML\ReplayXML.csproj", "{1EEDAB23-C075-42D2-B18F-02DE355AEEF2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tool", "Tool", "{4D91C006-6169-45AA-B720-CCDD20C54F2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +26,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1EEDAB23-C075-42D2-B18F-02DE355AEEF2} = {4D91C006-6169-45AA-B720-CCDD20C54F2A}
 	EndGlobalSection
 EndGlobal
