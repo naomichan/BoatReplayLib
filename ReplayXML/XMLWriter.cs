@@ -62,6 +62,9 @@ namespace ReplayXML {
         }
 
         public static void CreateXML(XElement root, IGamePacketTemplate packet) {
+            if(packet == null) {
+                return;
+            }
             Type t = packet.GetType();
             if (REPRES.IsAssignableFrom(t)) {
                 IRepresentative r = packet as IRepresentative;

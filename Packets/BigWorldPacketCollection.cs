@@ -51,10 +51,13 @@ namespace BoatReplayLib.Packets {
             if (item == null) {
                 return;
             }
+            if (item.Data == null || item.Represents() == null) {
+                return;
+            }
             if (frozen) {
                 return;
             }
-            if(SkipUnknown && GamePacketTemplateFactory.GetInstance().GetGamePacketAttribute(item.Represents()).IsUnknown) {
+            if (SkipUnknown && GamePacketTemplateFactory.GetInstance().GetGamePacketAttribute(item.Represents()).IsUnknown) {
                 return;
             }
             if (mode.HasFlag(CollectionMode.Packets)) {

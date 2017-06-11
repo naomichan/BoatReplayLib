@@ -82,26 +82,22 @@ namespace BoatReplayLib {
                 cipher.Init(false, new KeyParameter(GetClosestKey(GameVersionULong)));
 
                 byte[] prev = (byte[])IV.Clone();
-                using (MemoryStream dec = new MemoryStream()) {
-                    while (input.Position != input.Length) {
-                        byte[] output = new byte[8];
-                        cipher.Reset();
-                        byte[] buffer = new byte[8];
-                        input.Read(buffer, 0, 8);
-                        cipher.ProcessBytes(buffer, output, 0);
-                        for (int i = 0; i < output.Length; ++i) {
-                            output[i] ^= prev[i];
-                        }
-                        dec.Write(output, 0, 8);
-                        prev = (byte[])output.Clone();
+                byte[] dataBytes = new byte[compressedSize];
+                for (uint i = 0; i < compressedSize; i += 8) {
+                    byte[] output = new byte[8];
+                    cipher.Reset();
+                    byte[] buffer = new byte[8];
+                    input.Read(buffer, 0, 8);
+                    cipher.ProcessBytes(buffer, output, 0);
+                    for (int j = 0; j < output.Length; ++j) {
+                        output[j] ^= prev[j];
+                        dataBytes[i + j] = output[j];
                     }
-                    dec.Position = 0;
-                    
-                    byte[] dataBytes = new byte[dec.Length];
-                    dec.Read(dataBytes, 0, (int)dec.Length);
-                    data = new MemoryStream(ZlibStream.UncompressBuffer(dataBytes));
-                    data.Position = 0;
+                    prev = (byte[])output.Clone();
                 }
+                
+                data = new MemoryStream(ZlibStream.UncompressBuffer(dataBytes));
+                data.Position = 0;
             }
         }
     }

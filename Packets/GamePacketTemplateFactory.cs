@@ -39,7 +39,7 @@ namespace BoatReplayLib.Packets {
 
             object value = template.GetType().GetField(field).GetValue(template);
             if (value == null) {
-                return template.GetType();
+                return null;
             }
 
             IGamePacketTemplate child = value as IGamePacketTemplate;
@@ -185,10 +185,9 @@ namespace BoatReplayLib.Packets {
                 case "SByte":
                     return reader.ReadSByte();
                 case "MemoryStream":
-                    if(!WHINEY) {
-                        return null;
-                    }
-                    return new MemoryStream(reader.ReadBytes((int)size));
+                    MemoryStream ms = new MemoryStream(reader.ReadBytes((int)size));
+                    ms.Position = 0;
+                    return ms;
                 case "IGamePacketTemplate": {
                         MemoryStream sandbox = new MemoryStream(reader.ReadBytes((int)size));
                         Type template = null;
@@ -196,7 +195,11 @@ namespace BoatReplayLib.Packets {
                             template = attrib.Polymorph(instance, ns);
                         }
                         if (template == null) {
-                            template = MEMORYTEMPLATE;
+                            if (WHINEY) {
+                                template = MEMORYTEMPLATE;
+                            } else {
+                                return null;
+                            }
                         }
                         return Read(sandbox, ns, template);
                     }
@@ -208,7 +211,11 @@ namespace BoatReplayLib.Packets {
                             template = attrib.Polymorph(instance, ns);
                         }
                         if (template == null) {
-                            template = MEMORYTEMPLATE;
+                            if (WHINEY) {
+                                template = MEMORYTEMPLATE;
+                            } else {
+                                return null;
+                            }
                         }
                         return Read(sandbox, ns, template);
                     } else if (GAMEPACKETTEMPLATE.IsAssignableFrom(fieldType) && !fieldType.IsInterface) {
