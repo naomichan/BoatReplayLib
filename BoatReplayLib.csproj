@@ -78,6 +78,13 @@
     <Compile Include="Packets\Version066Scenario\GameLogicSubtypes\ChatMessage.cs" />
     <Compile Include="Packets\Version066Scenario\GameLogicSubtypes\AvatarInfo.cs" />
     <Compile Include="Packets\Version066Scenario\GameLogic.cs" />
+    <Compile Include="Packets\Version066Scenario\Disconnect.cs" />
+    <Compile Include="Packets\Version066Scenario\Map.cs" />
+    <Compile Include="Packets\Version066Scenario\Position.cs" />
+    <Compile Include="Packets\Version066Scenario\WorldLogic.cs" />
+    <Compile Include="Packets\Version066Scenario\WorldLogicSubtypes\IsAlive.cs" />
+    <Compile Include="Packets\Version066Scenario\WorldLogicSubtypes\TotalDamage.cs" />
+    <Compile Include="Packets\Version066Scenario\WorldLogicSubtypes\Health.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -86,6 +93,7 @@
   <ItemGroup>
     <Folder Include="Packets\Version066Scenario\" />
     <Folder Include="Packets\Version066Scenario\GameLogicSubtypes\" />
+    <Folder Include="Packets\Version066Scenario\WorldLogicSubtypes\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
