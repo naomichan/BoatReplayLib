@@ -88,6 +88,9 @@
     <Compile Include="Packets\Version066Scenario\GameLogicSubtypes\Ribbon.cs" />
     <Compile Include="Interfaces\SuperTemplates\IRibbon.cs" />
     <Compile Include="Packets\Generic\GameTypes.cs" />
+    <Compile Include="Packets\Version066Scenario\GameLogicSubtypes\ShellInfo.cs" />
+    <Compile Include="Packets\Version066Scenario\GameLogicSubtypes\TorpedoInfo.cs" />
+    <Compile Include="Interfaces\SuperTemplates\IPickled.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

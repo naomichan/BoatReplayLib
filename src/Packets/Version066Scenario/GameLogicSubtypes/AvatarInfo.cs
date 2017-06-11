@@ -36,12 +36,22 @@ namespace BoatReplayLib.Packets.Version066Scenario.GameLogicSubtypes {
             null, // 18
             null, // 19
             null, // 20
-            null, // 21
+            "Loadout", // 21
             "WorldAvatarId", // 22
             "ShipId",
         };
 
-        private Dictionary<string, object>[] map = null;
+		public object GetPickle() {
+			if (PickleData == null) {
+				return null;
+			}
+			if (map == null) {
+				ParsePickle();
+			}
+			return map[0];
+		}
+
+		private Dictionary<string, object>[] map = null;
         public IReadOnlyDictionary<string, object>[] ParsePickle() {
             if (map != null) {
                 return map;

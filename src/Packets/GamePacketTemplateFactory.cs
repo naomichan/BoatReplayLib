@@ -113,8 +113,9 @@ namespace BoatReplayLib.Packets {
                 } else {
                     field.SetValue(instance, ReadGeneric(reader, attrib, instance, field, field.FieldType, ns));
                 }
-            } catch {
+            } catch (Exception ex) {
                 Console.Error.WriteLine("{0} does not match packet data!", template.FullName);
+                Console.Error.WriteLine(ex);
                 if (System.Diagnostics.Debugger.IsAttached) {
                     throw;
                 }

@@ -27,11 +27,11 @@ namespace ReplayXML {
                     }
                     GamePacketTemplateFactory.WHINEY = false;
                     Type ns = factory.GetClosestNamespace(replay.GameVersion[0], replay.GameVersion[1], replay.gameVersion[2]);
-					BigWorldPacketCollection packets = factory.ReadAll(replay.Data, ns, BigWorldPacketCollection.CollectionMode.Packets);
-					XElement root = new XElement("Replay", new XAttribute("Version", replay.ParsedJSON.clientVersionFromExe));
-                    foreach(BigWorldPacket packet in packets.Packets) {
+                    BigWorldPacketCollection packets = factory.ReadAll(replay.Data, ns, BigWorldPacketCollection.CollectionMode.Packets);
+                    XElement root = new XElement("Replay", new XAttribute("Version", replay.ParsedJSON.clientVersionFromExe));
+                    foreach (BigWorldPacket packet in packets.Packets) {
                         XElement element = XMLWriter.CreateXML(packet);
-                        if(element == null) {
+                        if (element == null) {
                             continue;
                         }
                         root.Add(element);

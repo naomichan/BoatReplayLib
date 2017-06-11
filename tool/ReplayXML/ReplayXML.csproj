@@ -43,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AvatarInfoXMLWriter.cs" />
+    <Compile Include="PickledXMLWriter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XMLWriter.cs" />
@@ -52,13 +52,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BoatReplayLib.csproj">
-      <Project>{b8accd7a-7782-4bff-a543-21a9c2ef500a}</Project>
+    <ProjectReference Include="..\..\src\BoatReplayLib.csproj">
+      <Project>{B8ACCD7A-7782-4BFF-A543-21A9C2EF500A}</Project>
       <Name>BoatReplayLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

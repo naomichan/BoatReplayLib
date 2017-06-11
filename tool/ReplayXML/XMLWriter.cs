@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
@@ -8,18 +9,25 @@ using BoatReplayLib.Packets;
 using BoatReplayLib.Packets.Generic;
 
 namespace ReplayXML {
-    public class XMLWriter {
-		private static Type STREAM = typeof(MemoryPacket);
+	public class XMLWriter {
+		private static Type MEMORYPACKET = typeof(MemoryPacket);
+		private static Type STREAM = typeof(Stream);
         private static Type GPT = typeof(IGamePacketTemplate);
 		private static Type REPRES = typeof(IRepresentative);
 		private static Type AVATAR = typeof(IAvatarInfo);
+		private static Type PICKLED = typeof(IPickled);
 		private static Type BW = typeof(BigWorldPacket);
 
 		public static void CreateXMLInner(XElement root, object obj, FieldInfo field, Type fieldType) {
 			XElement element = new XElement(field.Name);
 			element.SetAttributeValue("Type", fieldType.Name);
             if (fieldType.IsArray) {
-                CreateXMLInnerArray(element, (Array)obj, field, fieldType);
+                if (fieldType.GetElementType().Name == "Byte" || fieldType.GetElementType().Name == "SByte") {
+                    //element.SetValue(Convert.ToBase64String((byte[])obj));
+                    return;
+                } else {
+                    CreateXMLInnerArray(element, (Array)obj, field, fieldType);
+                }
             } else {
                 if (GPT.IsAssignableFrom(fieldType)) {
 					CreateXML(element, obj as IGamePacketTemplate);
@@ -29,7 +37,16 @@ namespace ReplayXML {
 						element.SetAttributeValue("Type", attr.Name);
                     }
                 } else {
-                    element.SetValue(obj);
+                    if (STREAM.IsAssignableFrom(fieldType)) {
+                        //Stream stream = (Stream)obj;
+                        //stream.Position = 0;
+                        //byte[] buffer = new byte[stream.Length];
+                        //stream.Read(buffer, 0, (int)stream.Length);
+                        //element.SetValue(Convert.ToBase64String(buffer));
+                        return;
+                    } else {
+                        element.SetValue(obj);
+                    }
                 }
             }
             root.Add(element);
@@ -68,11 +85,11 @@ namespace ReplayXML {
             Type t = packet.GetType();
             if (REPRES.IsAssignableFrom(t)) {
                 IRepresentative r = packet as IRepresentative;
-                if (r.Represents() == null || STREAM.IsAssignableFrom(r.Represents())) {
+                if (r.Represents() == null || MEMORYPACKET.IsAssignableFrom(r.Represents())) {
                     return;
                 }
             }
-            if (STREAM.IsAssignableFrom(t)) {
+            if (MEMORYPACKET.IsAssignableFrom(t)) {
                 return;
             }
             
@@ -85,9 +102,11 @@ namespace ReplayXML {
                 }
                 root.SetAttributeValue("Type", element.Name);
                 root.Add(element.Elements());
-            } else if(AVATAR.IsAssignableFrom(t)) {
-                AvatarInfoXMLWriter.CreateXML(root, packet as IAvatarInfo);
-            } else {
+			} else if (AVATAR.IsAssignableFrom(t)) {
+				PickledXMLWriter.CreateXML(root, packet as IAvatarInfo);
+			} else if (PICKLED.IsAssignableFrom(t)) {
+				PickledXMLWriter.CreateXML(root, packet as IPickled);
+			} else {
 				FieldInfo[] fields = t.GetFields();
 				foreach (FieldInfo field in fields) {
 					if (!field.IsPublic) {
