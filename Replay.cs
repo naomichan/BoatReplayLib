@@ -91,7 +91,9 @@ namespace BoatReplayLib {
                     cipher.ProcessBytes(buffer, output, 0);
                     for (int j = 0; j < output.Length; ++j) {
                         output[j] ^= prev[j];
-                        dataBytes[i + j] = output[j];
+                        if (i + j < compressedSize) {
+                            dataBytes[i + j] = output[j];
+                        }
                     }
                     prev = (byte[])output.Clone();
                 }
