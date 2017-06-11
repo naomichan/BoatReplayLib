@@ -1,0 +1,4 @@
+byte size;
+char[data] zlib_compressed_pickle;
+byte unknown;
+uint unknown;

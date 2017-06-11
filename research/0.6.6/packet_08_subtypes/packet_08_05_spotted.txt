@@ -1,0 +1,9 @@
+byte value;
+
+Direct = 1,
+Proxy = ?
+Air = ?
+Radar = ?
+Sonar = ?
+
+Needs testing.

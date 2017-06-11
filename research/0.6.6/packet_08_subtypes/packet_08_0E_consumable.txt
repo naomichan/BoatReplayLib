@@ -1,0 +1,5 @@
+byte value;
+float duration;
+
+SpeedBoost = 3
+Smoke = 7
