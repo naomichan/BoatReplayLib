@@ -6,10 +6,40 @@ using System.Text;
 
 namespace BoatReplayLib {
     public class Unpickler {
-        public static object[] load(byte[] data) {
+        public static object load(byte[] data) {
             using (MemoryStream ms = new MemoryStream(data)) {
                 return load(ms);
             }
+        }
+
+        public static object Decide(object value) {
+            PythonClass cls = value as PythonClass;
+            if (cls != null) {
+                return Flatten(cls.Dict as Dictionary<object, object>);
+            }
+            if (value.GetType().Name == "Dictionary`2") {
+                return Flatten(value as Dictionary<object, object>);
+            }
+            if (value.GetType().Name == "List`1") {
+                return Flatten(value as List<object>);
+            }
+            return value;
+        }
+
+        public static Dictionary<string, object> Flatten(Dictionary<object, object> dict) {
+            Dictionary<string, object> target = new Dictionary<string, object>();
+            foreach (KeyValuePair<object, object> pair in dict) {
+                target[pair.Key.ToString()] = Decide(pair.Value);
+            }
+            return target;
+        }
+
+        public static List<object> Flatten(List<object> dict) {
+            List<object> target = new List<object>();
+            foreach (object value in dict) {
+                target.Add(Decide(value));
+            }
+            return target;
         }
 
         public class UnimplementedOpcode : NotImplementedException {
@@ -88,7 +118,7 @@ namespace BoatReplayLib {
         private const string TRUE = "01";
         private const string FALSE = "00";
 
-        public static object[] load(Stream data) {
+        public static object load(Stream data) {
             using (BinaryReader reader = new BinaryReader(data)) {
                 Stack<object> stack = new Stack<object>();
                 Dictionary<int, object> memo = new Dictionary<int, object>();
@@ -104,7 +134,7 @@ namespace BoatReplayLib {
                             stack.Push(new List<object>());
                             break;
                         case OPCODE_EMPTY_TUPLE:
-                            stack.Push(new object[0] { });
+                            stack.Push(new List<object>());
                             break;
                         case OPCODE_EMPTY_DICT:
                             stack.Push(new Dictionary<object, object>());
@@ -205,20 +235,20 @@ namespace BoatReplayLib {
                             break;
                         case OPCODE_TUPLE1: {
                                 object a = stack.Pop();
-                                stack.Push(new object[1] { a });
+                                stack.Push(new List<object> { a });
                             }
                             break;
                         case OPCODE_TUPLE2: {
                                 object a = stack.Pop();
                                 object b = stack.Pop();
-                                stack.Push(new object[2] { b, a });
+                                stack.Push(new List<object> { b, a });
                             }
                             break;
                         case OPCODE_TUPLE3: {
                                 object a = stack.Pop();
                                 object b = stack.Pop();
                                 object c = stack.Pop();
-                                stack.Push(new object[3] { c, b, a });
+                                stack.Push(new List<object> { c, b, a });
                             }
                             break;
                         case OPCODE_STRING: {
@@ -245,7 +275,7 @@ namespace BoatReplayLib {
                         case OPCODE_TUPLE: {
                                 Stack<object> items = stack;
                                 stack = metastack.Pop();
-                                stack.Push(items.ToArray());
+                                stack.Push(items.ToList());
                             }
                             break;
                         case OPCODE_DICT: {
@@ -345,7 +375,7 @@ namespace BoatReplayLib {
                             }
                             break;
                         case OPCODE_STOP:
-                            object[] ret = stack.ToArray();
+                            object ret = stack.Pop();
                             metastack.Clear();
                             stack.Clear();
                             memo.Clear();

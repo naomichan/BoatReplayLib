@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using Ionic.Zlib;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace ShipLoadout {
     class MainClass {
@@ -20,7 +21,7 @@ namespace ShipLoadout {
             byte[] bytes = File.ReadAllBytes(args[0]).Reverse().ToArray();
             byte[] data = ZlibStream.UncompressBuffer(bytes);
 
-            object[] GameParams = Unpickler.load(data);
+            Dictionary<string, object> GameParams = Unpickler.Flatten(Unpickler.load(data) as Dictionary<object, object>);
         }
     }
 }

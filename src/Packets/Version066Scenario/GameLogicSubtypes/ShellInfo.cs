@@ -12,7 +12,7 @@ namespace BoatReplayLib.Packets.Version066Scenario.GameLogicSubtypes {
         [GamePacketField(DynamicSizeReference = "Size")]
 		public byte[] PickleData;
 
-		private object[] data;
+		private object data;
 
 		public object GetPickle() {
 			if (PickleData == null) {
@@ -21,7 +21,7 @@ namespace BoatReplayLib.Packets.Version066Scenario.GameLogicSubtypes {
 			if (data == null) {
 				ParsePickle();
 			}
-			return data[0];
+			return data;
 		}
 
 
