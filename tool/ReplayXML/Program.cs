@@ -3,7 +3,6 @@ using System.IO;
 using System.Xml.Linq;
 using BoatReplayLib.Packets;
 using BoatReplayLib;
-using BoatReplayLib.Interfaces.SuperTemplates;
 using BoatReplayLib.Packets.Generic;
 
 namespace ReplayXML {
