@@ -10,38 +10,38 @@ namespace BoatReplayLib.Packets.Version066Scenario.GameLogicSubtypes {
         public ushort Size;
         public byte Unknown2;
         [GamePacketField(DynamicSizeReference = "Size")]
-		public byte[] PickleData;
+        public byte[] PickleData;
 
-		private object data;
+        private object data;
 
-		public object GetPickle() {
-			if (PickleData == null) {
-				return null;
-			}
-			if (data == null) {
-				ParsePickle();
-			}
-			return data;
-		}
-
-        public void ParsePickle() {
-            data = Unpickler.load(PickleData);
+        public object GetPickle() {
+            if (PickleData == null) {
+                return null;
+            }
+            if (data == null) {
+                ParsePickle();
+            }
+            return data;
         }
 
-		public void PostProcessing() {
-			ParsePickle();
-		}
+        public void ParsePickle() {
+            data = Unpickler.LoadPickle(PickleData);
+        }
 
-		public Dictionary<string, object> SpecialValues() {
-			if (PickleData == null) {
-				return null;
-			}
-			if (data == null) {
-				ParsePickle();
-			}
-			Dictionary<string, object> d = new Dictionary<string, object>();
-			d["Data"] = data;
-			return d;
+        public void PostProcessing() {
+            ParsePickle();
+        }
+
+        public Dictionary<string, object> SpecialValues() {
+            if (PickleData == null) {
+                return null;
+            }
+            if (data == null) {
+                ParsePickle();
+            }
+            Dictionary<string, object> d = new Dictionary<string, object>();
+            d["Data"] = data;
+            return d;
         }
     }
 }

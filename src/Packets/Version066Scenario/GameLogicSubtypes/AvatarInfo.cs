@@ -41,23 +41,23 @@ namespace BoatReplayLib.Packets.Version066Scenario.GameLogicSubtypes {
             "ShipId",
         };
 
-		public object GetPickle() {
-			if (PickleData == null) {
-				return null;
-			}
-			if (map == null) {
-				ParsePickle();
-			}
-			return map[0];
-		}
+        public object GetPickle() {
+            if (PickleData == null) {
+                return null;
+            }
+            if (map == null) {
+                ParsePickle();
+            }
+            return map[0];
+        }
 
-		private Dictionary<string, object>[] map = null;
+        private Dictionary<string, object>[] map = null;
         public IReadOnlyDictionary<string, object>[] ParsePickle() {
             if (map != null) {
                 return map;
             }
             if (PickleData != null) {
-                List<object> pickle = Unpickler.load(PickleData) as List<object>;
+                List<object> pickle = Unpickler.LoadPickle(PickleData) as List<object>;
                 Dictionary<string, object>[] ret = new Dictionary<string, object>[pickle.Count];
                 for (int i = 0; i < pickle.Count; ++i) {
                     List<object> entry = pickle[i] as List<object>;

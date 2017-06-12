@@ -111,7 +111,7 @@ namespace BoatReplayLib.Packets {
                 if (isArray) {
                     field.SetValue(instance, ReadGenericArray(reader, attrib, instance, field, field.FieldType, ns));
                 } else {
-                    field.SetValue(instance, ReadGeneric(reader, attrib, instance, field, field.FieldType, ns));
+                    field.SetValue(instance, ReadGeneric(reader, attrib, instance, field.FieldType, ns));
                 }
             } catch (Exception ex) {
                 Console.Error.WriteLine("{0} does not match packet data!", template.FullName);
@@ -167,7 +167,7 @@ namespace BoatReplayLib.Packets {
             return false;
         }
 
-        private object ReadGeneric(BinaryReader reader, GamePacketFieldAttribute attrib, IGamePacketTemplate instance, FieldInfo field, Type fieldType, Type ns) {
+        private object ReadGeneric(BinaryReader reader, GamePacketFieldAttribute attrib, IGamePacketTemplate instance, Type fieldType, Type ns) {
             if (attrib != null && attrib.Ignore == true) {
                 return null;
             }
@@ -209,8 +209,9 @@ namespace BoatReplayLib.Packets {
                 case "SByte":
                     return reader.ReadSByte();
                 case "MemoryStream":
-                    MemoryStream ms = new MemoryStream(reader.ReadBytes((int)size));
-                    ms.Position = 0;
+                    MemoryStream ms = new MemoryStream(reader.ReadBytes((int)size)) {
+                        Position = 0
+                    };
                     return ms;
                 case "IGamePacketTemplate": {
                         MemoryStream sandbox = new MemoryStream(reader.ReadBytes((int)size));

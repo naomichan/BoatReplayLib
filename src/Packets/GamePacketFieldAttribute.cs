@@ -12,9 +12,6 @@ namespace BoatReplayLib.Packets {
         public ulong Size = 0;
         public string Encoding = "ascii";
 
-        public GamePacketFieldAttribute() {
-        }
-
         public Encoding GetEncoding() {
             return System.Text.Encoding.GetEncoding(Encoding);
         }

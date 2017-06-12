@@ -6,20 +6,19 @@ using System.Linq;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
 using static BoatReplayLib.Packets.GamePacketTemplateFactory;
 
 namespace BoatReplayLib {
     public class Replay : IDisposable {
-        private uint magic;
-        private uint version;
-        private uint jsonSize;
-        private string json;
-        private ReplayJSON parsedJson;
-        private uint uncompressedSize;
-        private uint compressedSize;
-        private MemoryStream data;
+        private readonly uint magic;
+        private readonly uint version;
+        private readonly uint jsonSize;
+        private readonly string json;
+        private readonly ReplayJSON parsedJson;
+        private readonly uint uncompressedSize;
+        private readonly uint compressedSize;
+        private readonly MemoryStream data;
 
         public uint Magic => magic;
         public uint Version => version;
@@ -50,12 +49,12 @@ namespace BoatReplayLib {
         }
 
         public void Dispose() {
-            ((IDisposable)data).Dispose();
+            data.Dispose();
         }
 
-        public static byte[] IV = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        public static byte[] IV = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
-        public short[] gameVersion = new short[3] { 0, 0, 0 };
+        public short[] gameVersion = { 0, 0, 0 };
         public short[] GameVersion => gameVersion;
 
         public ulong GameVersionULong => GenerateGameVersion(GameVersion[0], GameVersion[1], GameVersion[2]);
@@ -69,7 +68,7 @@ namespace BoatReplayLib {
                 parsedJson = JsonConvert.DeserializeObject<ReplayJSON>(json);
                 uncompressedSize = reader.ReadUInt32();
                 compressedSize = reader.ReadUInt32();
-                
+
                 if (overrideVersion == null) {
                     short[] versions = parsedJson.clientVersionFromExe.Split(new char[3] { ' ', ',', '.' }, StringSplitOptions.RemoveEmptyEntries).Take(3).Select(short.Parse).ToArray();
                     gameVersion = new short[3] { versions[0], versions[1], versions[2] };
@@ -97,9 +96,10 @@ namespace BoatReplayLib {
                     }
                     prev = (byte[])output.Clone();
                 }
-                
-                data = new MemoryStream(ZlibStream.UncompressBuffer(dataBytes));
-                data.Position = 0;
+
+                data = new MemoryStream(ZlibStream.UncompressBuffer(dataBytes)) {
+                    Position = 0
+                };
             }
         }
     }

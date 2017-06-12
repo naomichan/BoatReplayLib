@@ -3,45 +3,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using BoatReplayLib;
-using BoatReplayLib.Interfaces;
 using BoatReplayLib.Interfaces.SuperTemplates;
 
 namespace ReplayXML {
-    public class PickledXMLWriter {
-        private static Type T_INT = typeof(int);
-        private static Type T_LONG = typeof(long);
+    public static class PickledXMLWriter {
+        private static readonly Type T_INT = typeof(int);
+        private static readonly Type T_LONG = typeof(long);
 
-		private static void PythonClassToXML(XElement root, Unpickler.PythonClass cls) {
-			root.Add(new XElement("Name", cls.Name));
-			root.Add(new XElement("Module", cls.Module));
-			XElement args = new XElement("Args");
-			Decide(args, cls.Args);
-			root.Add(args);
-			XElement inst = new XElement("Instance");
-			Decide(inst, cls.Dict);
-			root.Add(inst);
+        private static void PythonClassToXML(XElement root, Unpickler.PythonClass cls) {
+            root.Add(new XElement("Name", cls.Name));
+            root.Add(new XElement("Module", cls.Module));
+            XElement args = new XElement("Args");
+            Decide(args, cls.Args);
+            root.Add(args);
+            XElement inst = new XElement("Instance");
+            Decide(inst, cls.Dict);
+            root.Add(inst);
         }
 
-		private static void Decide(XElement element, object entry) {
+        private static void Decide(XElement element, object entry) {
             Type t = entry.GetType();
-			if (t.Name == "Dictionary`2") {
-				DictToXML(element, entry as Dictionary<object, object>);
-			} else if (t.Name == "List`1") {
-				ListToXML(element, entry as List<object>);
-            } else if(t.Name == "PythonClass") {
+            if (t.Name == "Dictionary`2") {
+                DictToXML(element, entry as Dictionary<object, object>);
+            } else if (t.Name == "List`1") {
+                ListToXML(element, entry as List<object>);
+            } else if (t.Name == "PythonClass") {
                 PythonClassToXML(element, entry as Unpickler.PythonClass);
             } else if (t.IsArray) {
-				ListToXML(element, (entry as object[]).ToList());
-			} else {
-				element.SetValue(entry);
-			}
+                ListToXML(element, (entry as object[]).ToList());
+            } else {
+                element.SetValue(entry);
+            }
         }
 
         private static void DictToXML(XElement root, Dictionary<object, object> dict) {
             foreach (KeyValuePair<object, object> pair in dict) {
                 string key = pair.Key.ToString();
-                int n;
-                if(int.TryParse(key[0].ToString(), out n)) {
+                if (int.TryParse(key[0].ToString(), out int n)) {
                     key = "i" + key;
                 }
                 XElement element = new XElement(key, new XAttribute("Type", pair.Value.GetType().Name.Split('`')[0]));
@@ -56,24 +54,24 @@ namespace ReplayXML {
                 Decide(element, entry);
                 root.Add(element);
             }
-		}
+        }
 
         public static void CreateXML(XElement root, IPickled info) {
             if (info == null) {
                 return;
             }
             object data = info.GetPickle();
-            if(data == null) {
+            if (data == null) {
                 return;
             }
 
-			Decide(root, data);
+            Decide(root, data);
         }
 
-		public static void CreateXML(XElement root, IAvatarInfo info) {
-			if (info == null) {
-				return;
-			}
+        public static void CreateXML(XElement root, IAvatarInfo info) {
+            if (info == null) {
+                return;
+            }
 
             IReadOnlyDictionary<string, object>[] data = info.GetAvatarInfo();
 

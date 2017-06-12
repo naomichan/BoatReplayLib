@@ -5,39 +5,38 @@ using System.Linq;
 using System.Text;
 
 namespace BoatReplayLib {
-    public class Unpickler {
-        public static object load(byte[] data) {
+    public static class Unpickler {
+        public static object LoadPickle(byte[] data) {
             using (MemoryStream ms = new MemoryStream(data)) {
-                return load(ms);
+                return LoadPickle(ms);
             }
         }
 
-        public static object Decide(object value) {
-            PythonClass cls = value as PythonClass;
-            if (cls != null) {
-                return Flatten(cls.Dict as Dictionary<object, object>);
+        public static object UnpackPickle(object value) {
+            if (value is PythonClass cls) {
+                return FlattenPickle(cls.Dict as Dictionary<object, object>);
             }
             if (value.GetType().Name == "Dictionary`2") {
-                return Flatten(value as Dictionary<object, object>);
+                return FlattenPickle(value as Dictionary<object, object>);
             }
             if (value.GetType().Name == "List`1") {
-                return Flatten(value as List<object>);
+                return FlattenPickle(value as List<object>);
             }
             return value;
         }
 
-        public static Dictionary<string, object> Flatten(Dictionary<object, object> dict) {
+        public static Dictionary<string, object> FlattenPickle(Dictionary<object, object> dict) {
             Dictionary<string, object> target = new Dictionary<string, object>();
             foreach (KeyValuePair<object, object> pair in dict) {
-                target[pair.Key.ToString()] = Decide(pair.Value);
+                target[pair.Key.ToString()] = UnpackPickle(pair.Value);
             }
             return target;
         }
 
-        public static List<object> Flatten(List<object> dict) {
+        public static List<object> FlattenPickle(List<object> dict) {
             List<object> target = new List<object>();
             foreach (object value in dict) {
-                target.Add(Decide(value));
+                target.Add(UnpackPickle(value));
             }
             return target;
         }
@@ -64,7 +63,7 @@ namespace BoatReplayLib {
             }
         }
 
-        private static string readline(BinaryReader reader) {
+        private static string Readline(BinaryReader reader) {
             StringBuilder sb = new StringBuilder();
             char ch;
             while ((ch = reader.ReadChar()) != '\n') {
@@ -118,7 +117,7 @@ namespace BoatReplayLib {
         private const string TRUE = "01";
         private const string FALSE = "00";
 
-        public static object load(Stream data) {
+        public static object LoadPickle(Stream data) {
             using (BinaryReader reader = new BinaryReader(data)) {
                 Stack<object> stack = new Stack<object>();
                 Dictionary<int, object> memo = new Dictionary<int, object>();
@@ -159,7 +158,7 @@ namespace BoatReplayLib {
                             }
                             break;
                         case OPCODE_PUT: {
-                                int i = int.Parse(readline(reader));
+                                int i = int.Parse(Readline(reader));
                                 if (i < 0) {
                                     throw new Exception("Bad PUT opt");
                                 }
@@ -189,7 +188,7 @@ namespace BoatReplayLib {
                             }
                             break;
                         case OPCODE_GET: {
-                                int i = int.Parse(readline(reader));
+                                int i = int.Parse(Readline(reader));
                                 stack.Push(memo[i]);
                             }
                             break;
@@ -220,10 +219,10 @@ namespace BoatReplayLib {
                             stack.Push(reader.ReadUInt16());
                             break;
                         case OPCODE_FLOAT:
-                            stack.Push(double.Parse(readline(reader)));
+                            stack.Push(double.Parse(Readline(reader)));
                             break;
                         case OPCODE_LONG: {
-                                string value = readline(reader);
+                                string value = Readline(reader);
                                 if (value[value.Length - 1] == 'L') {
                                     value = value.Substring(0, value.Length - 1);
                                 }
@@ -252,7 +251,7 @@ namespace BoatReplayLib {
                             }
                             break;
                         case OPCODE_STRING: {
-                                string str = readline(reader);
+                                string str = Readline(reader);
                                 stack.Push(str.Substring(1, str.Length - 2));
                             }
                             break;
@@ -303,22 +302,23 @@ namespace BoatReplayLib {
                             }
                             break;
                         case OPCODE_GLOBAL: {
-                                string module = readline(reader);
-                                string name = readline(reader);
+                                string module = Readline(reader);
+                                string name = Readline(reader);
                                 stack.Push(new PythonClass(module, name));
                             }
                             break;
                         case OPCODE_INST: {
-                                string module = readline(reader);
-                                string name = readline(reader);
-                                PythonClass cls = new PythonClass(module, name);
-                                cls.Dict = stack;
+                                string module = Readline(reader);
+                                string name = Readline(reader);
+                                PythonClass cls = new PythonClass(module, name) {
+                                    Dict = stack
+                                };
                                 stack = metastack.Pop();
                                 stack.Push(cls);
                             }
                             break;
                         case OPCODE_INT: {
-                                string line = readline(reader);
+                                string line = Readline(reader);
                                 if (line == TRUE) {
                                     stack.Push(true);
                                 } else if (line == FALSE) {
@@ -361,7 +361,7 @@ namespace BoatReplayLib {
                             }
                             break;
                         case OPCODE_REDUCE: {
-                                object[] args = stack.Pop() as object[];
+                                List<object> args = stack.Pop() as List<object>;
                                 object func = stack.Pop();
                                 PythonClass cls = func as PythonClass;
                                 if (cls != null && cls.Module == "copy_reg") {

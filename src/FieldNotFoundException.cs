@@ -2,10 +2,10 @@
 
 namespace BoatReplayLib {
     public class FieldNotFoundException : Exception {
-        private Type t;
+        private readonly Type t;
         public Type T => t;
 
-        private string field;
+        private readonly string field;
         public string Field => field;
 
         public FieldNotFoundException(string field, Type t) : base($"Field {field} not found in type {t.FullName}.") {

@@ -21,7 +21,7 @@ namespace ShipLoadout {
             byte[] bytes = File.ReadAllBytes(args[0]).Reverse().ToArray();
             byte[] data = ZlibStream.UncompressBuffer(bytes);
 
-            Dictionary<string, object> GameParams = Unpickler.Flatten(Unpickler.load(data) as Dictionary<object, object>);
+            Dictionary<string, object> GameParams = Unpickler.FlattenPickle(Unpickler.LoadPickle(data) as Dictionary<object, object>);
         }
     }
 }
