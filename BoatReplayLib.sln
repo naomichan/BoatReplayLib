@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReplayXML", "tool\ReplayXML
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tool", "Tool", "{4D91C006-6169-45AA-B720-CCDD20C54F2A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipLoadout", "tool\ShipLoadout\ShipLoadout.csproj", "{702FD650-BC1B-4589-9CC8-933C71940C59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,11 +25,16 @@ Global
 		{1EEDAB23-C075-42D2-B18F-02DE355AEEF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EEDAB23-C075-42D2-B18F-02DE355AEEF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EEDAB23-C075-42D2-B18F-02DE355AEEF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{702FD650-BC1B-4589-9CC8-933C71940C59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{702FD650-BC1B-4589-9CC8-933C71940C59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{702FD650-BC1B-4589-9CC8-933C71940C59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{702FD650-BC1B-4589-9CC8-933C71940C59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1EEDAB23-C075-42D2-B18F-02DE355AEEF2} = {4D91C006-6169-45AA-B720-CCDD20C54F2A}
+		{702FD650-BC1B-4589-9CC8-933C71940C59} = {4D91C006-6169-45AA-B720-CCDD20C54F2A}
 	EndGlobalSection
 EndGlobal

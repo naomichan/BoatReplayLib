@@ -45,22 +45,32 @@ namespace BoatReplayLib {
 
 		private const byte OPCODE_MARK = 0x28;
 		private const byte OPCODE_EMPTY_TUPLE = 0x29;
-        private const byte OPCODE_BINFLOAT = 0x47;
-        private const byte OPCODE_INT = 0x49;
+		private const byte OPCODE_FLOAT = 0x46;
+		private const byte OPCODE_BINFLOAT = 0x47;
+		private const byte OPCODE_INT = 0x49;
         private const byte OPCODE_BININT = 0x4A;
-        private const byte OPCODE_BININT1 = 0x4B;
-        private const byte OPCODE_BININT2 = 0x4D;
+		private const byte OPCODE_BININT1 = 0x4B;
+		private const byte OPCODE_LONG = 0x4C;
+		private const byte OPCODE_BININT2 = 0x4D;
+		private const byte OPCODE_NONE = 0x4E;
+		private const byte OPCODE_REDUCE = 0x52;
+		private const byte OPCODE_STRING = 0x53;
         private const byte OPCODE_SHORTBINSTRING = 0x55;
         private const byte OPCODE_BINUNICODE = 0x58;
 		private const byte OPCODE_EMPTY_LIST = 0x5D;
         private const byte OPCODE_APPEND = 0x61;
 		private const byte OPCODE_BUILD = 0x62;
 		private const byte OPCODE_GLOBAL = 0x63;
-        private const byte OPCODE_APPENDS = 0x65;
+		private const byte OPCODE_DICT = 0x64;
+		private const byte OPCODE_APPENDS = 0x65;
+		private const byte OPCODE_GET = 0x67;
 		private const byte OPCODE_BINGET = 0x68;
+		private const byte OPCODE_INST = 0x69;
 		private const byte OPCODE_LONGBINGET = 0x6A;
+		private const byte OPCODE_LIST = 0x6C;
 		private const byte OPCODE_OBJ = 0x6F;
-        private const byte OPCODE_BINPUT = 0x71;
+		private const byte OPCODE_PUT = 0x70;
+		private const byte OPCODE_BINPUT = 0x71;
 		private const byte OPCODE_LONGBINPUT = 0x72;
 		private const byte OPCODE_SETITEM = 0x73;
 		private const byte OPCODE_TUPLE = 0x74;
@@ -113,25 +123,51 @@ namespace BoatReplayLib {
 						case OPCODE_SETITEM: {
                                 object value = stack.Pop();
                                 object key = stack.Pop();
-                                Dictionary<object, object> dict = (Dictionary<object, object>)stack.Peek();
-                                dict[key] = value;
+                                object target = stack.Peek();
+                                Dictionary<object, object> dict = (Dictionary<object, object>)target;
+							    dict[key] = value;
 							}
 							break;
-                        case OPCODE_BINPUT: {
-                                byte i = reader.ReadByte();
-                                memo[i] = stack.Peek();
-                            }
-                            break;
+						case OPCODE_PUT: {
+                                int i = int.Parse(readline(reader));
+                                if(i < 0) {
+                                    throw new Exception("Bad PUT opt");
+                                }
+                                object value = null;
+                                if(stack.Count > 0) {
+                                    value = stack.Peek();
+                                }
+                                memo[i] = value;
+							}
+							break;
+						case OPCODE_BINPUT: {
+								byte i = reader.ReadByte();
+								object value = null;
+								if (stack.Count > 0) {
+									value = stack.Peek();
+								}
+								memo[i] = value;
+							}
+							break;
                         case OPCODE_LONGBINPUT: {
-                                int i = reader.ReadInt32();
-                                memo[i] = stack.Peek();
+								int i = reader.ReadInt32();
+								object value = null;
+								if (stack.Count > 0) {
+									value = stack.Peek();
+								}
+								memo[i] = value;
                             }
-                            break;
-                        case OPCODE_BINGET: {
-                                byte i = reader.ReadByte();
-                                stack.Push(memo[i]);
-                            }
-                            break;
+							break;
+						case OPCODE_GET: {
+                                int i = int.Parse(readline(reader));
+								stack.Push(memo[i]);
+							}
+							break;
+						case OPCODE_BINGET: {
+								byte i = reader.ReadByte();
+								stack.Push(memo[i]);
+							}
+							break;
                         case OPCODE_LONGBINGET: {
                                 int i = reader.ReadInt32();
                                 stack.Push(memo[i]);
@@ -140,18 +176,32 @@ namespace BoatReplayLib {
                         case OPCODE_MARK:
                             metastack.Push(stack);
                             stack = new Stack<object>();
-                            break;
-                        case OPCODE_BININT:
-                            stack.Push(reader.ReadInt32());
-                            break;
+							break;
+						case OPCODE_NONE:
+							stack.Push(null);
+							break;
+						case OPCODE_BININT:
+							stack.Push(reader.ReadInt32());
+							break;
                         case OPCODE_BININT1:
                             stack.Push(reader.ReadByte());
 							break;
 						case OPCODE_BININT2:
 							stack.Push(reader.ReadUInt16());
 							break;
-                        case OPCODE_BINFLOAT: 
-                            stack.Push(BitConverter.ToDouble(reader.ReadBytes(8).Reverse().ToArray(), 0));
+						case OPCODE_FLOAT:
+							stack.Push(double.Parse(readline(reader)));
+							break;
+                        case OPCODE_LONG: {
+                                string value = readline(reader);
+                                if(value[value.Length - 1] == 'L') {
+                                    value = value.Substring(0, value.Length - 1);
+                                }
+                                stack.Push(long.Parse(value));
+                            }
+							break;
+						case OPCODE_BINFLOAT:
+							stack.Push(BitConverter.ToDouble(reader.ReadBytes(8).Reverse().ToArray(), 0));
 							break;
 						case OPCODE_TUPLE1: {
 								object a = stack.Pop();
@@ -171,11 +221,16 @@ namespace BoatReplayLib {
 								stack.Push(new object[3] { c, b, a });
 							}
 							break;
-                        case OPCODE_SHORTBINSTRING: {
-                                byte length = reader.ReadByte();
-                                stack.Push(Encoding.ASCII.GetString(reader.ReadBytes(length)));
-                            }
-                            break;
+						case OPCODE_STRING: {
+                                string str = readline(reader);
+								stack.Push(str.Substring(1, str.Length - 2));
+							}
+							break;
+						case OPCODE_SHORTBINSTRING: {
+								byte length = reader.ReadByte();
+								stack.Push(Encoding.ASCII.GetString(reader.ReadBytes(length)));
+							}
+							break;
                         case OPCODE_BINUNICODE: {
                                 int length = reader.ReadInt32();
                                 stack.Push(Encoding.UTF8.GetString(reader.ReadBytes(length)));
@@ -187,22 +242,49 @@ namespace BoatReplayLib {
 						case OPCODE_NEWFALSE:
 							stack.Push(false);
 							break;
-                        case OPCODE_TUPLE: {
+						case OPCODE_TUPLE: {
 								Stack<object> items = stack;
 								stack = metastack.Pop();
-                                stack.Push(items.ToArray());
-                            }
-                            break;
+								stack.Push(items.ToArray());
+							}
+							break;
+						case OPCODE_DICT: {
+								Stack<object> items = stack;
+								stack = metastack.Pop();
+								Dictionary<object, object> dict = new Dictionary<object, object>();
+								while (items.Count > 0) {
+									object key = stack.Pop();
+									object value = stack.Pop();
+									dict[key] = value;
+								}
+								stack.Push(dict);
+							}
+							break;
+						case OPCODE_LIST: {
+								Stack<object> items = stack;
+								stack = metastack.Pop();
+								stack.Push(items.ToList());
+							}
+							break;
                         case OPCODE_BUILD: {
 								object state = stack.Pop();
                                 PythonClass inst = stack.Peek() as PythonClass;
                                 inst.Dict = state;
                             }
-                            break;
-                        case OPCODE_GLOBAL: {
-                                string module = readline(reader);
-                                string name = readline(reader);
-                                stack.Push(new PythonClass(module, name));
+							break;
+						case OPCODE_GLOBAL: {
+								string module = readline(reader);
+								string name = readline(reader);
+								stack.Push(new PythonClass(module, name));
+							}
+							break;
+						case OPCODE_INST: {
+								string module = readline(reader);
+								string name = readline(reader);
+                                PythonClass cls = new PythonClass(module, name);
+                                cls.Dict = stack;
+                                stack = metastack.Pop();
+								stack.Push(cls);
 							}
 							break;
                         case OPCODE_INT: {
@@ -248,6 +330,20 @@ namespace BoatReplayLib {
 								stack.Push(klass);
 							}
 							break;
+                        case OPCODE_REDUCE: {
+                                object[] args = stack.Pop() as object[];
+                                object func = stack.Pop();
+                                PythonClass cls = func as PythonClass;
+                                if (cls != null && cls.Module == "copy_reg") {
+                                    stack.Push(args[2]);
+                                } else if (cls != null) {
+                                    cls.Args = args;
+                                    stack.Push(cls);
+                                } else {
+                                    stack.Push(args);
+                                }
+                            }
+                            break;
                         case OPCODE_STOP:
                             object[] ret = stack.ToArray();
                             metastack.Clear();
