@@ -5,9 +5,7 @@ namespace BoatReplayLib.Packets.Version066Scenario {
     [GamePacket(Name = "Map", Type = 0x27)]
     public class Map : IGamePacketTemplate {
         public uint Unknown1;
-        public ushort Unknown2;
-        public uint Unknown3;
-        public ushort Unknown4;
+        public ulong SessionId;
         public uint Length;
         [GamePacketField(DynamicSizeReference = "Length")]
         public string MapName;

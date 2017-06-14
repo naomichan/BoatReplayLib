@@ -1,0 +1,64 @@
+Header:
+
+ushort unknown;
+byte unknown;
+ushort unknown;
+byte unknown;
+ushort unknown;
+byte unknown;
+ushort unknown;
+byte unknown;
+ushort unknown;
+
+byte param_count;
+Parameter[param_count]
+
+uint unknown;
+byte unknown;
+byte unknown;
+uint transitions;
+ushort transitions2;
+byte unknown;
+byte unknown;
+byte unknown;
+byte unknown_count;
+UnknownStruct[unknown_count] struct;
+ushort unknown;
+byte unknown;
+byte type_count;
+ShipType[type_count] shipTypes;
+
+
+Parameter:
+
+float startTime;
+float y;
+float z;
+byte unknown;
+byte unknown;
+byte unknown;
+short unknown
+ushort unknown;
+short unknown;
+ushort unknown;
+ushort unknown;
+byte unknown;
+byte unknown;
+uint unknown;
+short unknown;
+ushort unknown;
+byte unknown;
+byte unknown;
+
+UnknownStruct:
+
+ushort unknown;
+ushort unknown;
+ushort unknown;
+
+ShipType:
+
+ushort unknown;
+ushort unknown;
+byte size;
+char[size] name;

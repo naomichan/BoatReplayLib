@@ -1,7 +1,5 @@
 uint unknown;
-ushort unknown;
-uint unknown;
-ushort unknown;
+ulong sessionId;
 uint name_length;
 char[name_length] name;
 matrix4 matrix;
