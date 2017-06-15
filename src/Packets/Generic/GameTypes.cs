@@ -18,5 +18,14 @@
             UnderPenetration = 16,
             Ricochet = 17
         }
+
+        public enum GameConsumable : byte {
+            SpeedBoost = 3,
+            Smoke = 7
+        }
+
+        public enum GameSpotting : byte {
+            Direct = 1
+        }
     }
 }

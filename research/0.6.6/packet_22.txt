@@ -1,0 +1,4 @@
+uint unknown; // networkId?
+byte unknown;
+uint size; // size + 1
+byte type; // for some reason this overflows into the packet buffer.

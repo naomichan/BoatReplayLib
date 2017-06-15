@@ -1,0 +1,4 @@
+byte unknown;
+ushort size;
+byte unknown;
+char[size] python_pickle;

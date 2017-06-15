@@ -91,6 +91,10 @@
     <Compile Include="Packets\Version066Scenario\GameLogicSubtypes\ShellInfo.cs" />
     <Compile Include="Packets\Version066Scenario\GameLogicSubtypes\TorpedoInfo.cs" />
     <Compile Include="Interfaces\SuperTemplates\IPickled.cs" />
+    <Compile Include="Packets\Version066Scenario\GameLogicSubtypes\Consumable.cs" />
+    <Compile Include="Interfaces\SuperTemplates\IConsumable.cs" />
+    <Compile Include="Interfaces\SuperTemplates\ISpotted.cs" />
+    <Compile Include="Packets\Version066Scenario\GameLogicSubtypes\Spotted.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
