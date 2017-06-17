@@ -10,7 +10,7 @@ namespace ReplayXML {
         private static readonly Type T_INT = typeof(int);
         private static readonly Type T_LONG = typeof(long);
 
-        private static void PythonClassToXML(XElement root, Unpickler.PythonClass cls) {
+        public static void PythonClassToXML(XElement root, Unpickler.PythonClass cls) {
             root.Add(new XElement("Name", cls.Name));
             root.Add(new XElement("Module", cls.Module));
             XElement args = new XElement("Args");
@@ -36,7 +36,7 @@ namespace ReplayXML {
             }
         }
 
-        private static void DictToXML(XElement root, Dictionary<object, object> dict) {
+        public static void DictToXML(XElement root, Dictionary<object, object> dict) {
             foreach (KeyValuePair<object, object> pair in dict) {
                 string key = pair.Key.ToString();
                 if (int.TryParse(key[0].ToString(), out int n)) {
@@ -48,7 +48,7 @@ namespace ReplayXML {
             }
         }
 
-        private static void ListToXML(XElement root, List<object> list) {
+        public static void ListToXML(XElement root, List<object> list) {
             foreach (object entry in list) {
                 XElement element = new XElement("value", new XAttribute("Type", entry.GetType().Name.Split('`')[0]));
                 Decide(element, entry);

@@ -63,7 +63,7 @@ namespace BoatReplayLib.Packets.Version066Scenario.GameLogicSubtypes {
                     List<object> entry = pickle[i] as List<object>;
                     ret[i] = new Dictionary<string, object>();
                     for (int j = 0; j < entry.Count; ++j) {
-                        object[] pair = entry[j] as object[];
+                        List<object> pair = entry[j] as List<object>;
                         int index = (int)Convert.ChangeType(pair[0], typeof(int));
                         string key = $"Unknown{index}";
                         if (index < KVTranslation.Length && KVTranslation[index] != null) {

@@ -13,6 +13,9 @@ namespace BoatReplayLib {
         }
 
         public static object UnpackPickle(object value) {
+            if (value == null) {
+                return value;
+            }
             if (value is PythonClass cls) {
                 return FlattenPickle(cls.Dict as Dictionary<object, object>);
             }
@@ -27,16 +30,20 @@ namespace BoatReplayLib {
 
         public static Dictionary<string, object> FlattenPickle(Dictionary<object, object> dict) {
             Dictionary<string, object> target = new Dictionary<string, object>();
-            foreach (KeyValuePair<object, object> pair in dict) {
-                target[pair.Key.ToString()] = UnpackPickle(pair.Value);
+            if (dict != null) {
+                foreach (KeyValuePair<object, object> pair in dict) {
+                    target[pair.Key.ToString()] = UnpackPickle(pair.Value);
+                }
             }
             return target;
         }
 
         public static List<object> FlattenPickle(List<object> dict) {
             List<object> target = new List<object>();
-            foreach (object value in dict) {
-                target.Add(UnpackPickle(value));
+            if (dict != null) {
+                foreach (object value in dict) {
+                    target.Add(UnpackPickle(value));
+                }
             }
             return target;
         }
@@ -61,6 +68,10 @@ namespace BoatReplayLib {
                 Module = module;
                 Name = name;
             }
+
+            public PythonClass Clone() => new PythonClass(Module, Name);
+
+            public new string ToString() => $"{Module}.{Name}";
         }
 
         private static string Readline(BinaryReader reader) {
@@ -189,17 +200,32 @@ namespace BoatReplayLib {
                             break;
                         case OPCODE_GET: {
                                 int i = int.Parse(Readline(reader));
-                                stack.Push(memo[i]);
+                                object value = memo[i];
+                                if (value is PythonClass klass) {
+                                    stack.Push(klass.Clone());
+                                } else {
+                                    stack.Push(value);
+                                }
                             }
                             break;
                         case OPCODE_BINGET: {
-                                byte i = reader.ReadByte();
-                                stack.Push(memo[i]);
+								byte i = reader.ReadByte();
+								object value = memo[i];
+								if (value is PythonClass klass) {
+									stack.Push(klass.Clone());
+								} else {
+									stack.Push(value);
+								}
                             }
                             break;
                         case OPCODE_LONGBINGET: {
-                                int i = reader.ReadInt32();
-                                stack.Push(memo[i]);
+								int i = reader.ReadInt32();
+								object value = memo[i];
+								if (value is PythonClass klass) {
+									stack.Push(klass.Clone());
+								} else {
+									stack.Push(value);
+								}
                             }
                             break;
                         case OPCODE_MARK:
