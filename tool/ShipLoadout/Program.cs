@@ -71,6 +71,13 @@ namespace ShipLoadout {
             }
 
             Console.Out.WriteLine(root);
+
+            if (args.Length <= 1) return;
+
+            using (var sw = new StreamWriter(args[2]))
+            {
+                sw.Write(root);
+            } //end using
         }
     }
 }

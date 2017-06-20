@@ -22,6 +22,11 @@ namespace ReplayXML {
         }
 
         private static void Decide(XElement element, object entry) {
+            if (entry == null)
+            {
+                return;
+            } //end if
+
             Type t = entry.GetType();
             if (t.Name == "Dictionary`2") {
                 DictToXML(element, entry as Dictionary<object, object>);
