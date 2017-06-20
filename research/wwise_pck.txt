@@ -1,0 +1,42 @@
+/// 0x00 ; header
+
+uint AKPK; // KPKG magic
+uint headerSize;
+uint version;
+uint folderListSize;
+uint bankTableSize;
+uint soundTableSize;
+uint unknown;
+
+/// 0x1C ; folderList
+
+uint size;
+{
+	uint offset; //offset to filename + 0x28, is a sequence of shorts
+	uint id;
+}[size];
+
+/// 0x1C + folderListSize ; bankTable
+
+uint size;
+{
+	uint id;
+	uint offsetMultiplier;
+	uint bankSize;
+	uint offset; // * offsetMultiplier
+	uint folder;
+}[size];
+
+// 0x1C + folderListSize + bankTableSize ; soundTable
+
+uint size;
+{
+	uint id;
+	uint offsetMultiplier;
+	uint fileSize;
+	uint offset; // * offsetMultiplier
+	uint folder;
+	
+}[size];
+
+// 0x1C + headerSize ; data
